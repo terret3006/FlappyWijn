@@ -15,7 +15,10 @@
             background: #111;
             color: #fff;
             font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-            overflow: hidden;
+            overflow-y: auto;
+            /* ✅ allow vertical scrolling */
+            overflow-x: hidden;
+            /* optional: prevent horizontal scroll */
         }
 
         .wrap {
@@ -23,7 +26,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
+            /* height: 100%; */
             gap: 10px;
         }
 
@@ -80,11 +83,118 @@
             transform: scale(0.98);
             box-shadow: 0 0 6px rgba(0, 255, 204, 0.8);
         }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Dark theme inputs */
+        .dark-input {
+            width: 250px;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #555;
+            border-radius: 6px;
+            background: #222;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            text-align: center;
+        }
+
+        .dark-input:focus {
+            border-color: #e07b06;
+            /* neon green highlight */
+        }
+
+        .final-score {
+            font-size: 40px;
+            /* bigger text */
+            font-weight: bold;
+            margin: 20px 0;
+            color: rgb(230, 238, 15);
+            /* neon green */
+            text-shadow: 0 0 8px rgb(209, 118, 20),
+                0 0 16px rgb(202, 117, 27),
+                0 0 24px rgb(218, 66, 11);
+            /* glowing effect */
+        }
+
+        .submit-heading {
+            font-size: 32px;
+            /* larger than normal */
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #e8e041;
+            /* white text */
+            letter-spacing: 1px;
+            /* slight spacing for readability */
+        }
+
+        #leaderboard {
+            max-height: 300px;
+            /* limit height */
+            overflow-y: auto;
+            /* scroll inside container */
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-family: system-ui;
+            text-align: center;
+            border-radius: 10px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #leaderboard::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #leaderboard::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
+
+        #leaderboard::-webkit-scrollbar-track {
+            background: #222;
+        }
+
+        #leaderboardBody tr:nth-child(1) td {
+            color: #ffd700;
+            /* gold */
+            text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700;
+            /* font-weight: bold; */
+        }
+
+        #leaderboardBody tr:nth-child(2) td {
+            color: #c0c0c0;
+            /* silver */
+            text-shadow: 0 0 5px #c0c0c0, 0 0 10px #c0c0c0;
+            /* font-weight: bold; */
+        }
+
+        #leaderboardBody tr:nth-child(3) td {
+            color: #f4b97e;
+            /* bronze */
+            text-shadow: 0 0 5px #e8b787, 0 0 10px #c89f77;
+            /* font-weight: bold; */
+        }
     </style>
 </head>
 
 <body>
     <div class="wrap">
+        <br>
+        <br>
+        <br>
+        <h1 class="final-score">FlappyWijn</h1>
         <canvas id="game" width="1200" height="720"></canvas>
         <div class="row">
             <button id="btnStart">Start (Space)</button>
@@ -101,10 +211,342 @@
             <img src="assets/samosa.png" width="24" height="24" alt="Samosa"> (–2).
             Space = flap, R = restart.
         </div>
+        <div id="submitOverlay" style="
+  display:none;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.8);
+  color:white;
+  text-align:center;
+  padding-top:100px;
+  font-family:system-ui;
+  z-index:9999;
+">
+            <h2 class="submit-heading">Submit your score?</h2>
+            <p id="finalScore" class="final-score"></p>
+
+            <!-- Player name -->
+            <input id="playerName" placeholder="Your name" autocomplete="off" class="dark-input" />
+
+            <!-- Country dropdown -->
+            <select id="playerCountry" class="dark-input">
+                <option value="">Select your country</option>
+            </select>
+
+            <br><br>
+            <button id="btnSubmitYes">Yes, submit</button>
+            <button id="btnSubmitNo">No, thanks (press ESC)</button>
+
+            <!-- Spinner -->
+            <div id="spinner" style="display:none; margin-top:20px;">
+                <div style="
+      width:30px;height:30px;
+      border:4px solid #fff;
+      border-top:4px solid transparent;
+      border-radius:50%;
+      margin:0 auto;
+      animation: spin 1s linear infinite;
+    "></div>
+            </div>
+        </div>
+
+
+
+        <div id="leaderboard" style="
+  margin-top:20px;
+  padding:10px;
+  background:rgba(0,0,0,0.9);
+  color:white;
+  font-family:system-ui;
+  text-align:center;
+  border-radius:10px;
+  max-width:500px;
+  margin-left:auto;
+  margin-right:auto;
+  max-height:400px;
+  overflow-y:auto;
+">
+            <h3>Leaderboard - TOP 50 Worldwide Rankers</h3>
+            <table id="leaderboardTable" style="
+    width:100%;
+    border-collapse: collapse;
+    text-align: left;
+  ">
+                <thead>
+                    <tr style="border-bottom:1px solid #555;">
+                        <th style="padding:8px;">Rank</th>
+                        <th style="padding:8px;">Name</th>
+                        <th style="padding:8px;">Country</th>
+                        <th style="padding:8px;">Score</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody"></tbody>
+            </table>
+        </div>
+
+        <br>
+        <br>
+        <br>
+<footer style="
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(0,0,0,0.85);
+  color: white;
+  text-align: center;
+  font-family: system-ui;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+">
+  <div style="font-weight:bold; margin-bottom:5px;">Developer Contact & Socials</div>
+
+  <div style="display: flex; gap: 25px; align-items: center; justify-content: center;">
+    <!-- Gmail -->
+    <div style="display:flex; align-items:center; gap:8px;">
+      <img src="https://img.icons8.com/fluency/24/ffffff/gmail.png" alt="Gmail" style="filter: invert(0%);"/>
+      <span>terret3006@gmail.com</span>
+    </div>
+
+    <!-- Discord -->
+    <div style="display:flex; align-items:center; gap:8px;">
+      <img src="https://img.icons8.com/color/24/000000/discord-logo.png" alt="Discord" />
+      <span>terret3006</span>
+    </div>
+
+    <!-- YouTube -->
+    <div style="display:flex; align-items:center; gap:8px;">
+      <a href="https://www.youtube.com/@terret3006" target="_blank" style="color:white; text-decoration:none; display:flex; align-items:center; gap:8px;">
+        <img src="https://img.icons8.com/color/24/000000/youtube-play.png" alt="YouTube" />
+        <span>@terret3006</span>
+      </a>
+    </div>
+<!-- YouTube -->
+    <div style="display:flex; align-items:center; gap:8px;">
+      <a href="https://www.youtube.com/@terret2.0" target="_blank" style="color:white; text-decoration:none; display:flex; align-items:center; gap:8px;">
+        <img src="https://img.icons8.com/color/24/000000/youtube-play.png" alt="YouTube" />
+        <span>@terret2.0</span>
+      </a>
+    </div>
+
+
+  </div>
+</footer>
+
 
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCy3ANnYve34GYVmFF8lbk6UaPZX5rXY8Q",
+            authDomain: "flappywijn.firebaseapp.com",
+            projectId: "flappywijn",
+            storageBucket: "flappywijn.firebasestorage.app",
+            messagingSenderId: "813475395053",
+            appId: "1:813475395053:web:58ba797b84d944f8dc63e4",
+            measurementId: "G-HPVDTKQRD7"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let pendingScore = 0;
+
+        const btnYes = document.getElementById("btnSubmitYes");
+        const btnNo = document.getElementById("btnSubmitNo");
+
+        btnYes.addEventListener("click", confirmSubmit);
+        btnNo.addEventListener("click", closeSubmit);
+
+        let alreadySubmitted = false;
+        let overlayVisible = false;
+
+        function showSubmitOverlay(score) {
+            pendingScore = score;
+            document.getElementById("finalScore").innerText = "Your score: " + score;
+
+            document.getElementById("playerName").value = "";
+            document.getElementById("playerCountry").selectedIndex = 0;
+
+            document.getElementById("submitOverlay").style.display = "block";
+            overlayVisible = true;
+        }
+
+
+        function closeSubmit() {
+            console.log("Overlay closed");
+            document.getElementById("submitOverlay").style.display = "none";
+            overlayVisible = false;
+        }
+
+        async function confirmSubmit() {
+            const name = document.getElementById("playerName").value.trim();
+            const country = document.getElementById("playerCountry").value.trim();
+
+
+            if (!name || !country) {
+                alert("Please enter your name and country before submitting.");
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9]+$/.test(name)) {
+                alert("Name can only contain letters and digits, no spaces allowed.");
+                return;
+            }
+
+            if (name.length > 20) {
+                alert("Name cannot exceed 20 characters.");
+                return;
+            }
+            const btnYes = document.getElementById("btnSubmitYes");
+            const btnNo = document.getElementById("btnSubmitNo");
+            const spinner = document.getElementById("spinner");
+
+            btnYes.disabled = true;
+            btnNo.disabled = true;
+            spinner.style.display = "block";
+
+            try {
+
+                const snapshot = await db.collection("scores")
+                    .orderBy("score", "desc")
+                    //   .limit(100) // fetch extra for edge-case ties
+                    .get();
+
+
+                let rank = 0;
+                let count = 0;
+                let lastScore = null;
+                let qualifies = false;
+
+                snapshot.forEach(doc => {
+                    count++;
+                    const data = doc.data();
+                    if (data.score !== lastScore) {
+                        rank = count;
+                        lastScore = data.score;
+                    }
+                    if (rank <= 50 && pendingScore >= data.score) {
+                        qualifies = true;
+                    }
+                });
+
+                // Automatically qualify if less than 50 scores exist
+                if (snapshot.size < 50) qualifies = true;
+
+                if (qualifies) {
+
+                    await db.collection("scores").add({
+                        name,
+                        country,
+                        score: pendingScore,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+
+                    let currentRank = 0;
+                    let processedCount = 0;
+                    let prevScore = null;
+
+                    const allSnapshot = await db.collection("scores")
+                        .orderBy("score", "desc")
+                        .get();
+
+                    allSnapshot.forEach(doc => {
+                        processedCount++;
+                        const data = doc.data();
+                        if (data.score !== prevScore) {
+                            currentRank = processedCount;
+                            prevScore = data.score;
+                        }
+                        if (currentRank > 50) {
+                            db.collection("scores").doc(doc.id).delete();
+                        }
+                    });
+                }
+
+                alreadySubmitted = true;
+
+
+                setTimeout(() => {
+                    closeSubmit();
+                    loadLeaderboard();
+                    btnYes.disabled = false;
+                    btnNo.disabled = false;
+                    spinner.style.display = "none";
+                }, 1000);
+
+            } catch (err) {
+                console.error(err);
+                alert("Error submitting score.");
+                btnYes.disabled = false;
+                btnNo.disabled = false;
+                spinner.style.display = "none";
+            }
+        }
+
+
+
+        async function loadLeaderboard() {
+            const tbody = document.getElementById("leaderboardBody");
+            tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+
+            try {
+                const snapshot = await db.collection("scores")
+                    .orderBy("score", "desc")
+                    .get();
+
+                if (snapshot.empty) {
+                    tbody.innerHTML = "<tr><td colspan='4'>No scores yet</td></tr>";
+                    return;
+                }
+
+                tbody.innerHTML = "";
+
+                let prevScore = null;
+                let rank = 0;
+                let displayedCount = 0;
+
+                snapshot.forEach((doc, index) => {
+                    const data = doc.data();
+
+                    if (data.score !== prevScore) {
+                        rank = displayedCount + 1;
+                    }
+
+                    prevScore = data.score;
+                    displayedCount++;
+
+                    if (rank > 50) return;
+
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+        <td style="padding:8px;">${rank}</td>
+        <td style="padding:8px;">${data.name}</td>
+        <td style="padding:8px;">${data.country}</td>
+        <td style="padding:8px;">${data.score}</td>
+      `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = "<tr><td colspan='4' style='text-align:center'>Error loading leaderboard</td></tr>";
+            }
+        }
+
+
+
+
+        window.addEventListener("load", () => {
+            loadLeaderboard();
+        });
+
+
         // ============================
         // CONFIG
         // ============================
@@ -603,7 +1045,7 @@
             drawMusicHUD(ctx);
 
         }
-
+        let overlayShown = false;
         function drawGameOver() {
             // Background overlay
             ctx.fillStyle = "rgba(0,0,0,0.6)";
@@ -677,6 +1119,14 @@
             ctx.fillStyle = "#fff";
             ctx.font = "bold 28px system-ui, Arial";
             ctx.fillText("Press R to Restart", WIDTH / 2, offsetY + 34);
+
+            streak = 0;
+
+
+            if (!overlayShown) {
+                showSubmitOverlay(score);
+                overlayShown = true;
+            }
         }
 
 
@@ -688,20 +1138,35 @@
             if (!gameOver) {
                 started = true;
                 faceVel = JUMP;
+                overlayShown = false;
+                alreadySubmitted = false;
+
             }
         }
- window.addEventListener("keydown", (e) => {
-    if (e.code === "Space") { e.preventDefault(); flap(); }
-    if (e.code === "KeyR" && gameOver) reset();
-});
 
-document.getElementById("btnStart").onclick = flap;
-document.getElementById("btnJump").onclick = flap;
-document.getElementById("btnReset").onclick = () => { if (gameOver) reset(); };
 
-canvas.addEventListener("click", (e) => {
-    handleInput(e.clientX, e.clientY);
-});
+
+        window.addEventListener("keydown", (e) => {
+            if (overlayVisible) {
+                if (e.code === "Escape") {
+                    e.preventDefault();
+                    closeSubmit();
+                }
+
+                return;
+            }
+
+            // Normal gameplay keys
+            if (e.code === "Space") { e.preventDefault(); flap(); }
+            if (e.code === "KeyR" && gameOver) reset();
+        });
+        document.getElementById("btnStart").onclick = flap;
+        document.getElementById("btnJump").onclick = flap;
+        document.getElementById("btnReset").onclick = () => { if (gameOver) reset(); };
+
+        canvas.addEventListener("click", (e) => {
+            handleInput(e.clientX, e.clientY);
+        });
 
         // ============================
         // GAME LOOP
@@ -856,6 +1321,40 @@ canvas.addEventListener("click", (e) => {
             reset();
             requestAnimationFrame(loop);
         })();
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const countrySelect = document.getElementById("playerCountry");
+            const countries = [
+                "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", "Australia", "Austria",
+                "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+                "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+                "Cambodia", "Cameroon", "Canada", "Cape Verde", "Central African Republic", "Chad", "Chile", "China",
+                "Colombia", "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark",
+                "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Estonia", "Eswatini",
+                "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece",
+                "Guatemala", "Guinea", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran",
+                "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kuwait",
+                "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg",
+                "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Mauritania", "Mauritius", "Mexico",
+                "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nepal",
+                "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway",
+                "Oman", "Pakistan", "Panama", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania",
+                "Russia", "Rwanda", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
+                "Slovakia", "Slovenia", "Somalia", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sudan", "Suriname",
+                "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo", "Trinidad and Tobago",
+                "Tunisia", "Turkey", "Turkmenistan", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
+                "United States", "Uruguay", "Uzbekistan", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+            ];
+
+            countries.forEach(c => {
+                const option = document.createElement("option");
+                option.value = c;
+                option.textContent = c;
+                countrySelect.appendChild(option);
+            });
+        });
+
     </script>
 </body>
 

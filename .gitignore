@@ -1,0 +1,7 @@
+android/
+node_modules/
+www/
+capacitor.config.json
+package-lock.json
+package.json
+test.html
