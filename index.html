@@ -16,9 +16,8 @@
             color: #fff;
             font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
             overflow-y: auto;
-            /* ✅ allow vertical scrolling */
-            overflow-x: hidden;
-            /* optional: prevent horizontal scroll */
+            overflow-x: auto;
+
         }
 
         .wrap {
@@ -26,7 +25,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            /* height: 100%; */
+
             gap: 10px;
         }
 
@@ -200,6 +199,7 @@
             <button id="btnStart">Start (Space)</button>
             <button id="btnJump">Jump (Space)</button>
             <button id="btnReset">Reset (R)</button>
+            <button id="btnMute">Mute (M)</button>
         </div>
         <div class="hint">
             Pass pipes (+1). Collect
@@ -209,7 +209,8 @@
             Avoid
             <img src="assets/contract.png" width="24" height="24" alt="Contract"> (–4),
             <img src="assets/samosa.png" width="24" height="24" alt="Samosa"> (–2).
-            Space = flap, R = restart.
+            Space = flap, R = restart, M = Mute/Unmute music,
+            ←/→ = Prev/Next track
         </div>
         <div id="submitOverlay" style="
   display:none;
@@ -648,17 +649,17 @@
         // CHANGE SONG FUNCTION
         // ============================
         function playSong(index) {
-            index = (index + songs.length) % songs.length; // wrap around
+            index = (index + songs.length) % songs.length; 
             currentSong = index;
 
             if (musicOn) {
-                fadeMusic(0, 300, () => { // fade out current
+                fadeMusic(0, 300, () => { 
                     music.src = songs[currentSong];
                     music.play();
-                    fadeMusic(targetVolume, 500); // fade in new song
+                    fadeMusic(targetVolume, 500); 
                 });
             } else {
-                music.src = songs[currentSong]; // just change source if music off
+                music.src = songs[currentSong]; 
             }
         }
 
@@ -692,6 +693,32 @@
                 playSong(currentSong + 1);
             }
         });
+        // ============================
+        // KEYBOARD SHORTCUTS
+        // ============================
+        document.addEventListener("keydown", (e) => {
+            if (e.key.toLowerCase() === "m") {
+                toggleMusic();
+            }
+            else if (e.key === "ArrowRight") {
+                playSong(currentSong + 1); 
+            }
+            else if (e.key === "ArrowLeft") {
+                playSong(currentSong - 1); 
+            }
+        });
+        // ============================
+        // TOGGLE MUSIC FUNCTION
+        // ============================
+        function toggleMusic() {
+            musicOn = !musicOn;
+            if (musicOn) {
+                music.play();
+                fadeMusic(targetVolume, 500);
+            } else {
+                fadeMusic(0, 500);
+            }
+        }
 
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
@@ -703,11 +730,31 @@
             }
         });
 
+
+
+
+
+
+
+
+        const coinSound = new Audio("assets/coin.mp3");
+        coinSound.volume = 0.25;
+        const gameOverSound = new Audio("assets/dead.mp3");
+        gameOverSound.volume = 0.15;
+
+
+
+
+
+
+
+
+
         // ============================
         // HUD DRAW FUNCTION
         // ============================
         function drawMusicHUD(ctx) {
-       
+
             ctx.fillStyle = "#fff";
             ctx.font = "28px Arial";
             ctx.textBaseline = "top";
@@ -1033,7 +1080,7 @@
 
                 if (elapsed < 1) { // show for 1 second
                     // Zoom effect: start bigger and shrink to normal
-                    const scale = 1 + 0.5 * Math.sin(Math.PI * (1 - elapsed)); // from 1.5 -> 1
+                    const scale = 1 + 0.5 * Math.sin(Math.PI * (1 - elapsed));
 
                     // Wobble effect: horizontal shift
                     const wobble = Math.sin(elapsed * 10) * 10; // ±10px
@@ -1176,6 +1223,12 @@
         document.getElementById("btnStart").onclick = flap;
         document.getElementById("btnJump").onclick = flap;
         document.getElementById("btnReset").onclick = () => { if (gameOver) reset(); };
+        document.getElementById("btnMute").onclick = () => {
+    toggleMusic();
+
+
+    document.getElementById("btnMute").textContent = musicOn ? "Mute (M)" : "Unmute (M)";
+};
 
         canvas.addEventListener("click", (e) => {
             handleInput(e.clientX, e.clientY);
@@ -1240,6 +1293,10 @@
                         samosaCount++; score += POINT_SAMOSA; lastScoreChange = POINT_SAMOSA;
                     }
 
+                    if (positiveHit && musicOn) {
+                        coinSound.currentTime = 0; // rewind so it can play rapidly
+                        coinSound.play();
+                    }
                     // ---- Multiplier logic ----
                     if (positiveHit) {
                         streak++;
@@ -1281,7 +1338,13 @@
                 const withinX = (faceX + FACE_W > x) && (faceX < x + PIPE_W);
                 if (withinX) {
                     if (faceY < top || (faceY + FACE_H) > bot) {
-                        gameOver = true;
+                        if (!gameOver) { // ensure sound only plays once
+                            gameOver = true;
+                            if (musicOn) {
+                                gameOverSound.currentTime = 0;
+                                gameOverSound.play();
+                            }
+                        }
                         break;
                     }
                 }
@@ -1289,13 +1352,20 @@
 
             // Out of bounds
             if (faceY > HEIGHT || faceY < -40) {
-                gameOver = true;
+                if (!gameOver) {
+                    gameOver = true;
+                    if (musicOn) {
+                        gameOverSound.currentTime = 0;
+                        gameOverSound.play();
+                    }
+                }
             }
+
 
             // Difficulty scaling
             const difficultyProgress = croissantCount + friesCount;
             pipeGap = Math.max(PIPE_GAP_MIN, PIPE_GAP_START - difficultyProgress * 3.5);
-            pipeSpeed = Math.min(PIPE_SPEED_MAX, PIPE_SPEED_START + difficultyProgress * 0.055);
+            pipeSpeed = Math.min(PIPE_SPEED_MAX, PIPE_SPEED_START + difficultyProgress * 0.155);
         }
 
         function rectsOverlap(a, b) {
