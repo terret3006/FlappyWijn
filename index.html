@@ -752,7 +752,7 @@
             // CONFIG
             // ============================
 
-            let gameStartTime = performance.now();
+            let gameStartTime = null;
             const WIDTH = 1200, HEIGHT = 720;
             // const FPS = 60;
             // const SPAWN_FRAMES = 90;
@@ -1150,6 +1150,7 @@
             let running = true;
             let gameOver = false;
             let started = false;
+            gameStartTime = null;
 
 
             let lastScoreChange = 0;
@@ -1273,6 +1274,14 @@
                 }
             }
 
+
+
+
+            // function startGame() {
+            //     started = true;
+            //     running = true;
+            //     gameStartTime = performance.now();
+            // }
             function currentSpacingPixels(speed) {
                 return Math.floor(speed * SPAWN_INTERVAL);
             }
@@ -1654,7 +1663,7 @@
                 // ---- Pipe row (custom) ---- 
                 const px = WIDTH / 2 - 70, py = offsetY + 20, pw = 16, ph = 24;
                 // Body 
-                ctx.fillStyle = "#0a0"; 
+                ctx.fillStyle = "#0a0";
                 ctx.fillRect(px, py, pw, ph);
                 // Side shading 
                 ctx.fillStyle = "#060";
@@ -1696,11 +1705,13 @@
             // ============================
             function flap() {
                 if (!gameOver) {
-                    started = true;
+                    if (!started) {
+                        started = true;
+                        gameStartTime = performance.now(); 
+                    }
                     faceVel = JUMP;
                     overlayShown = false;
                     alreadySubmitted = false;
-
                 }
             }
 
@@ -1749,7 +1760,10 @@
             // GAME LOOP
             // ============================
             function update(dt) {
+
+                if (!gameStartTime) return; 
                 const elapsedSec = (performance.now() - gameStartTime) / 1000;
+
                 if (gameOver || !started) return;
 
                 faceVel += GRAVITY * dt;
@@ -1814,7 +1828,7 @@
                                     vy: arrowSpeed
                                 });
                             } else {
-        
+
                                 arrows.push({
                                     x: p.x + (PIPE_W / 2) - 8,
                                     y: p.gapY - (pipeGap >> 1),
@@ -1830,7 +1844,7 @@
 
 
                 // ---- Update arrows ----
-           
+
                 for (const a of arrows) {
                     a.x -= pipeSpeed * dt;
                     a.y += a.vy * dt;
