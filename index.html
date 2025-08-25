@@ -55,6 +55,12 @@
             margin: 0 2px;
         }
 
+        .hint {
+            max-width: 1000px;
+            margin: 20px auto;
+            line-height: 1.8;
+            font-size: 14px;
+        }
 
         button {
             background: linear-gradient(145deg, #1a1a1a, #222);
@@ -114,33 +120,33 @@
 
         .final-score {
             font-size: 40px;
-            /* bigger text */
+
             font-weight: bold;
             margin: 20px 0;
             color: rgb(230, 238, 15);
-            /* neon green */
+
             text-shadow: 0 0 8px rgb(209, 118, 20),
                 0 0 16px rgb(202, 117, 27),
                 0 0 24px rgb(218, 66, 11);
-            /* glowing effect */
+
         }
 
         .submit-heading {
             font-size: 32px;
-            /* larger than normal */
+
             font-weight: 600;
             margin-bottom: 15px;
             color: #e8e041;
-            /* white text */
+
             letter-spacing: 1px;
-            /* slight spacing for readability */
+
         }
 
         #leaderboard {
             max-height: 300px;
-            /* limit height */
+
             overflow-y: auto;
-            /* scroll inside container */
+
             padding: 10px;
             background: rgba(0, 0, 0, 0.8);
             color: white;
@@ -167,23 +173,66 @@
 
         #leaderboardBody tr:nth-child(1) td {
             color: #ffd700;
-            /* gold */
+
             text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700;
-            /* font-weight: bold; */
+
         }
 
         #leaderboardBody tr:nth-child(2) td {
             color: #c0c0c0;
-            /* silver */
+
             text-shadow: 0 0 5px #c0c0c0, 0 0 10px #c0c0c0;
-            /* font-weight: bold; */
+
         }
 
         #leaderboardBody tr:nth-child(3) td {
             color: #f4b97e;
-            /* bronze */
+
             text-shadow: 0 0 5px #e8b787, 0 0 10px #c89f77;
-            /* font-weight: bold; */
+
+        }
+
+
+
+        .items-guide {
+            margin-top: 30px;
+            padding: 10px;
+            background: #111;
+            border-radius: 12px;
+            color: #fff;
+        }
+
+        .items-guide h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .items-guide .card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #222;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .items-guide .card h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .items-guide .card div {
+            max-width: 800px;
+        }
+
+        .items-guide .card p {
+            margin: 4px 0 0;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
         }
     </style>
 </head>
@@ -192,7 +241,7 @@
     <div class="wrap">
         <br>
         <br>
-        <br>
+
         <h1 class="final-score">FlappyWijn</h1>
         <canvas id="game" width="1200" height="720"></canvas>
         <div class="row">
@@ -200,18 +249,37 @@
             <button id="btnJump">Jump (Space)</button>
             <button id="btnReset">Reset (R)</button>
             <button id="btnMute">Mute (M)</button>
+            <button id="btnSfx">SFX (S)</button>
+            <button id="btnFullscreen">Fullscreen (F)</button>
         </div>
         <div class="hint">
-            Pass pipes (+1). Collect
-            <img src="assets/croissant.png" width="24" height="24" alt="Croissant"> (+2),
-            <img src="assets/fries.png" width="24" height="24" alt="Fries"> (+3),
-            <img src="assets/poop.png" width="24" height="24" alt="Poop"> (+2).
+            Pass pipes (+1 pts), Collect
+            <img src="assets/croissant.png" width="24" height="24" alt="Croissant"> (+2 pts, +2 life),
+            <img src="assets/fries.png" width="24" height="24" alt="Fries"> (+3 pts, +2 life),
+            <img src="assets/poop.png" width="24" height="24" alt="Poop"> (+2 pts, +2 life),
+            <img src="assets/coffee.png" width="24" height="24" alt="Coffee"> (+2 pts, +4 life).
             Avoid
-            <img src="assets/contract.png" width="24" height="24" alt="Contract"> (–4),
-            <img src="assets/samosa.png" width="24" height="24" alt="Samosa"> (–2).
-            Space = flap, R = restart, M = Mute/Unmute music,
-            ←/→ = Prev/Next track
+            <img src="assets/contract.png" width="24" height="24" alt="Contract"> (–4 pts, –2 life),
+            <img src="assets/samosa.png" width="24" height="24" alt="Samosa"> (–2 pts, –3 life),
+            <img src="assets/ferret.png" width="24" height="24" alt="Ferret"> (–6 pts, –12 life),
+            <img src="assets/yellowarrow.png" width="24" height="24" alt="Arrow"> (–2 life),
+            <img src="assets/sad_chair.png" width="24" height="24" alt="Arrow"> (-3 pts, –2 life),
+            <img src="assets/copesmoke.png" width="24" height="24" alt="Copesmoke"> (grants 12s
+            invincibility).
+
+            <br><br>
+            <strong>❤️ Health</strong> starts at 100.
+            <strong>Space</strong> = flap, <strong>R</strong> = restart, <strong>M</strong> = Mute/Unmute music,
+            <strong>S</strong> = Toggle SFX, <strong>←/→</strong> = Prev/Next track, <strong>F</strong> = Toggle
+            Fullscreen.
+
+            <br>
+            <strong>Multiplier:</strong> Collect 6 positive items (Croissant, Fries, Coffee, Poop) in a row for 2x
+            score.
+            Hit 12 in a row for 3x until streak is broken!
+
         </div>
+
         <div id="submitOverlay" style="
   display:none;
   position:fixed;
@@ -286,9 +354,128 @@
         </div>
 
         <br>
-        <br>
-        <br>
-        <footer style="
+
+
+
+        <div id="itemsGuide" class="items-guide">
+            <h2>Game Items Guide</h2>
+            <div class="card">
+                <img src="assets/croissant.png" alt="Croissant" width="40" height="40">
+                <div>
+                    <h3>Illuminati Croissant </h3>
+                    <p>An infamous tasty French pastry that the wizard elf loves to munch on camera, it is notorious for
+                        exposing
+                        his online grifting scams, Arwijn had to stop having them while doing his "show". Restores +2
+                        life and gives +2 points. Collect croissants to boost your health while scoring more. Safe and
+                        always helpful on your journey.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="assets/fries.png" alt="Fries" width="40" height="40">
+                <div>
+                    <h3>Fries </h3>
+                    <p>Golden, crispy fries, something the elf thrives on even though he can buy other vegetables truly
+                        exposes how good of a "medical expoert" he is. Gives you +3 points and +2 life. They’re
+                        delicious, but don’t get too distracted! Great for stacking up points while staying alive
+                        longer.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="assets/samosa.png" alt="Samosa" width="40" height="40">
+                <div>
+                    <h3>Samosa </h3>
+                    <p>Looks tasty but beware! Each samosa reminds Arwijn of his ultimate enemy - Terret, it costs –2
+                        points and –3 life. A deceptive snack for Arwijn that rightfully punishes him. Avoid it if you
+                        want to survive longer.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="assets/poop.png" alt="Poop" width="40" height="40">
+                <div>
+                    <h3>Poop </h3>
+                    <p>Surprisingly, poop which is Arwijn's go to snack, when he gets no donations boosts your run with
+                        +2 points and +2 life! Weird but true in this world, even the gross stuff can save you. Grab it
+                        without hesitation.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="assets/contract.png" alt="Job Contract" width="40" height="40">
+                <div>
+                    <h3>Job Contract </h3>
+                    <p>A tricky item. Talking about "jobs" and "work" drains Arwijn. –4 points and –2 life. Represents
+                        boring work
+                        dragging you down. Avoid unless you want your score to suffer.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="assets/ferret.png" alt="Ferret" width="40" height="40">
+                <div>
+                    <h3>Ferret </h3>
+                    <p>Ferrets are mischievous and the most dangerous. The Ferret Army was established in 2024
+                        comprising of FE/GE compatriots, only made possible due to the vile behaviour of the Bald Wizard
+                        Arwijn.
+                        They cost –6 points and –12 life if touched. They get more
+                        common as your score grows, making them one of the toughest hazards. Their role in this game is
+                        inspired from the marvellous job they do online daily</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="assets/yellowarrow.png" alt="Arrow" width="40" height="40">
+                <div>
+                    <h3>Crossbow Arrow </h3>
+                    <p>Arwijn hates the crossbow that hangs on his Snot encrusted wall, and what he hates even more is
+                        people mentioning it constantly. Arrows appear in the game randomly from the pipe caps, try to
+                        flap away from the pointy arrows or lose -2 Life pts ! They cost –6 points and –12 life if
+                        touched. They get more
+                        Each pipe launches multiple arrows directed at the Snot Goblin Arwijn who needs to evade them.
+                    </p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="assets/coffee.png" alt="Coffee" width="40" height="40">
+                <div>
+                    <h3>Coffee </h3>
+                    <p>Arwijn gulps down coffee without milk, not out of refined taste but because he can’t afford it.
+                        This bitter
+                        brew boosts him with +2 points and +4 Life, keeping him jittery enough to dodge pipes. He
+                        insists it’s “artisanal”,
+                        but really it’s just instant powder.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="assets/sad_chair.png" alt="Sad Chair" width="40" height="40">
+                <div>
+                    <h3>Sad Chair</h3>
+                    <p>This is the same chair Arwijn has sat on since the beginning of his so-called streaming career.
+                        The poor
+                        thing is weary from years of delusion-fueled rants and wants its revenge. Striking it drains you
+                        for –3 points and
+                        –2 Life.
+                        Even the chair wants a break.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="assets/copesmoke.png" alt="Copesmoking" width="40" height="40">
+                <div>
+                    <h3>Copesmoking</h3>
+                    <p>When Arwijn lights up a copesmoke, reality bends. For 12 glorious seconds you’re completely
+                        invincible:
+                        pipes, ferrets, contracts, arrows - none can harm you. It’s a rare pickup that shields you from
+                        all negative
+                        hits, letting you farm points in peace. The downside? You’ll have to smell like Arwijn
+                        afterwards.</p>
+                </div>
+            </div>
+
+            <br>
+            <br>
+
+            <footer style="
   margin-top: 20px;
   padding: 15px;
   background: rgba(0,0,0,0.85);
@@ -301,386 +488,475 @@
   align-items: center;
   gap: 10px;
 ">
-  <div style="font-weight:bold; margin-bottom:5px;">Developer Contact & Socials</div>
+                <div style="font-weight:bold; margin-bottom:5px;">Developer Contact & Socials</div>
 
-  <div style="display: flex; gap: 25px; align-items: center; justify-content: center; flex-wrap: wrap;">
-    <!-- Gmail -->
-    <div style="display:flex; align-items:center; gap:8px;">
-      <img src="https://img.icons8.com/fluency/24/ffffff/gmail.png" alt="Gmail" style="filter: invert(0%);" />
-      <span>terret3006@gmail.com</span>
-    </div>
+                <div style="display: flex; gap: 25px; align-items: center; justify-content: center; flex-wrap: wrap;">
 
-    <!-- Discord -->
-    <div style="display:flex; align-items:center; gap:8px;">
-      <img src="https://img.icons8.com/color/24/000000/discord-logo.png" alt="Discord" />
-      <span>terret3006</span>
-    </div>
-
-    <!-- YouTube main -->
-    <div style="display:flex; align-items:center; gap:8px;">
-      <a href="https://www.youtube.com/@terret3006" target="_blank"
-        style="color:white; text-decoration:none; display:flex; align-items:center; gap:8px;">
-        <img src="https://img.icons8.com/color/24/000000/youtube-play.png" alt="YouTube" />
-        <span>@terret3006</span>
-      </a>
-    </div>
-
-    <!-- YouTube alt -->
-    <div style="display:flex; align-items:center; gap:8px;">
-      <a href="https://www.youtube.com/@terret2.0" target="_blank"
-        style="color:white; text-decoration:none; display:flex; align-items:center; gap:8px;">
-        <img src="https://img.icons8.com/color/24/000000/youtube-play.png" alt="YouTube" />
-        <span>@terret2.0</span>
-      </a>
-    </div>
-
-    <!-- Rumble -->
-<div style="display:flex; align-items:center; gap:8px;">
-  <a href="https://rumble.com/user/terret2" target="_blank"
-    style="color:white; text-decoration:none; display:flex; align-items:center; gap:8px;">
-    <img src="assets/rumble_logo.png" alt="Rumble" width="24" height="24" />
-    <span>@terret2</span>
-  </a>
-</div>
-
-</footer>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <img src="https://img.icons8.com/fluency/24/ffffff/gmail.png" alt="Gmail"
+                            style="filter: invert(0%);" />
+                        <span>terret3006@gmail.com</span>
+                    </div>
 
 
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <img src="https://img.icons8.com/color/24/000000/discord-logo.png" alt="Discord" />
+                        <span>terret3006</span>
+                    </div>
 
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCy3ANnYve34GYVmFF8lbk6UaPZX5rXY8Q",
-            authDomain: "flappywijn.firebaseapp.com",
-            projectId: "flappywijn",
-            storageBucket: "flappywijn.firebasestorage.app",
-            messagingSenderId: "813475395053",
-            appId: "1:813475395053:web:58ba797b84d944f8dc63e4",
-            measurementId: "G-HPVDTKQRD7"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        let pendingScore = 0;
-
-        const btnYes = document.getElementById("btnSubmitYes");
-        const btnNo = document.getElementById("btnSubmitNo");
-
-        btnYes.addEventListener("click", confirmSubmit);
-        btnNo.addEventListener("click", closeSubmit);
-
-        let alreadySubmitted = false;
-        let overlayVisible = false;
-
-        function showSubmitOverlay(score) {
-            pendingScore = score;
-            document.getElementById("finalScore").innerText = "Your score: " + score;
-
-            document.getElementById("playerName").value = "";
-            document.getElementById("playerCountry").selectedIndex = 0;
-
-            document.getElementById("submitOverlay").style.display = "block";
-            overlayVisible = true;
-        }
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <a href="https://www.youtube.com/@terret3006" target="_blank"
+                            style="color:white; text-decoration:none; display:flex; align-items:center; gap:8px;">
+                            <img src="https://img.icons8.com/color/24/000000/youtube-play.png" alt="YouTube" />
+                            <span>@terret3006</span>
+                        </a>
+                    </div>
 
 
-        function closeSubmit() {
-            console.log("Overlay closed");
-            document.getElementById("submitOverlay").style.display = "none";
-            overlayVisible = false;
-        }
-
-        async function confirmSubmit() {
-            const name = document.getElementById("playerName").value.trim();
-            const country = document.getElementById("playerCountry").value.trim();
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <a href="https://www.youtube.com/@terret2.0" target="_blank"
+                            style="color:white; text-decoration:none; display:flex; align-items:center; gap:8px;">
+                            <img src="https://img.icons8.com/color/24/000000/youtube-play.png" alt="YouTube" />
+                            <span>@terret2.0</span>
+                        </a>
+                    </div>
 
 
-            if (!name || !country) {
-                alert("Please enter your name and country before submitting.");
-                return;
-            }
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <a href="https://rumble.com/user/terret2" target="_blank"
+                            style="color:white; text-decoration:none; display:flex; align-items:center; gap:8px;">
+                            <img src="assets/rumble_logo.png" alt="Rumble" width="24" height="24" />
+                            <span>terret2</span>
+                        </a>
+                    </div>
 
-            if (!/^[a-zA-Z0-9]+$/.test(name)) {
-                alert("Name can only contain letters and digits, no spaces allowed.");
-                return;
-            }
+            </footer>
 
-            if (name.length > 20) {
-                alert("Name cannot exceed 20 characters.");
-                return;
-            }
+
+
+        </div>
+
+        <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+        <script>
+
+
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyCy3ANnYve34GYVmFF8lbk6UaPZX5rXY8Q",
+                authDomain: "flappywijn.firebaseapp.com",
+                projectId: "flappywijn",
+                storageBucket: "flappywijn.firebasestorage.app",
+                messagingSenderId: "813475395053",
+                appId: "1:813475395053:web:58ba797b84d944f8dc63e4",
+                measurementId: "G-HPVDTKQRD7"
+            };
+
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
+            let pendingScore = 0;
+
             const btnYes = document.getElementById("btnSubmitYes");
             const btnNo = document.getElementById("btnSubmitNo");
-            const spinner = document.getElementById("spinner");
 
-            btnYes.disabled = true;
-            btnNo.disabled = true;
-            spinner.style.display = "block";
+            btnYes.addEventListener("click", confirmSubmit);
+            btnNo.addEventListener("click", closeSubmit);
 
-            try {
+            let alreadySubmitted = false;
+            let overlayVisible = false;
 
-                const snapshot = await db.collection("scores")
-                    .orderBy("score", "desc")
-                    //   .limit(100) // fetch extra for edge-case ties
-                    .get();
+            function showSubmitOverlay(score) {
+                pendingScore = score;
+                document.getElementById("finalScore").innerText = "Your score: " + score;
 
+                document.getElementById("playerName").value = "";
+                document.getElementById("playerCountry").selectedIndex = 0;
 
-                let rank = 0;
-                let count = 0;
-                let lastScore = null;
-                let qualifies = false;
-
-                snapshot.forEach(doc => {
-                    count++;
-                    const data = doc.data();
-                    if (data.score !== lastScore) {
-                        rank = count;
-                        lastScore = data.score;
-                    }
-                    if (rank <= 50 && pendingScore >= data.score) {
-                        qualifies = true;
-                    }
-                });
-
-                // Automatically qualify if less than 50 scores exist
-                if (snapshot.size < 50) qualifies = true;
-
-                if (qualifies) {
-
-                    await db.collection("scores").add({
-                        name,
-                        country,
-                        score: pendingScore,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-
-
-                    let currentRank = 0;
-                    let processedCount = 0;
-                    let prevScore = null;
-
-                    const allSnapshot = await db.collection("scores")
-                        .orderBy("score", "desc")
-                        .get();
-
-                    allSnapshot.forEach(doc => {
-                        processedCount++;
-                        const data = doc.data();
-                        if (data.score !== prevScore) {
-                            currentRank = processedCount;
-                            prevScore = data.score;
-                        }
-                        if (currentRank > 50) {
-                            db.collection("scores").doc(doc.id).delete();
-                        }
-                    });
-                }
-
-                alreadySubmitted = true;
-
-
-                setTimeout(() => {
-                    closeSubmit();
-                    loadLeaderboard();
-                    btnYes.disabled = false;
-                    btnNo.disabled = false;
-                    spinner.style.display = "none";
-                }, 1000);
-
-            } catch (err) {
-                console.error(err);
-                alert("Error submitting score.");
-                btnYes.disabled = false;
-                btnNo.disabled = false;
-                spinner.style.display = "none";
+                document.getElementById("submitOverlay").style.display = "block";
+                overlayVisible = true;
             }
-        }
 
 
+            function closeSubmit() {
+                console.log("Overlay closed");
+                document.getElementById("submitOverlay").style.display = "none";
+                overlayVisible = false;
+            }
 
-        async function loadLeaderboard() {
-            const tbody = document.getElementById("leaderboardBody");
-            tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+            async function confirmSubmit() {
+                const name = document.getElementById("playerName").value.trim();
+                const country = document.getElementById("playerCountry").value.trim();
 
-            try {
-                const snapshot = await db.collection("scores")
-                    .orderBy("score", "desc")
-                    .get();
 
-                if (snapshot.empty) {
-                    tbody.innerHTML = "<tr><td colspan='4'>No scores yet</td></tr>";
+                if (!name || !country) {
+                    alert("Please enter your name and country before submitting.");
                     return;
                 }
 
-                tbody.innerHTML = "";
+                if (!/^[a-zA-Z0-9]+$/.test(name)) {
+                    alert("Name can only contain letters and digits, no spaces allowed.");
+                    return;
+                }
 
-                let prevScore = null;
-                let rank = 0;
-                let displayedCount = 0;
+                if (name.length > 20) {
+                    alert("Name cannot exceed 20 characters.");
+                    return;
+                }
+                const btnYes = document.getElementById("btnSubmitYes");
+                const btnNo = document.getElementById("btnSubmitNo");
+                const spinner = document.getElementById("spinner");
 
-                snapshot.forEach((doc, index) => {
-                    const data = doc.data();
+                btnYes.disabled = true;
+                btnNo.disabled = true;
+                spinner.style.display = "block";
 
-                    if (data.score !== prevScore) {
-                        rank = displayedCount + 1;
+                try {
+
+                    const snapshot = await db.collection("scores")
+                        .orderBy("score", "desc")
+                        //   .limit(100) 
+                        .get();
+
+
+                    let rank = 0;
+                    let count = 0;
+                    let lastScore = null;
+                    let qualifies = false;
+
+                    snapshot.forEach(doc => {
+                        count++;
+                        const data = doc.data();
+                        if (data.score !== lastScore) {
+                            rank = count;
+                            lastScore = data.score;
+                        }
+                        if (rank <= 50 && pendingScore >= data.score) {
+                            qualifies = true;
+                        }
+                    });
+
+
+                    if (snapshot.size < 50) qualifies = true;
+
+                    if (qualifies) {
+
+                        await db.collection("scores").add({
+                            name,
+                            country,
+                            score: pendingScore,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+
+
+                        let currentRank = 0;
+                        let processedCount = 0;
+                        let prevScore = null;
+
+                        const allSnapshot = await db.collection("scores")
+                            .orderBy("score", "desc")
+                            .get();
+
+                        allSnapshot.forEach(doc => {
+                            processedCount++;
+                            const data = doc.data();
+                            if (data.score !== prevScore) {
+                                currentRank = processedCount;
+                                prevScore = data.score;
+                            }
+                            if (currentRank > 50) {
+                                db.collection("scores").doc(doc.id).delete();
+                            }
+                        });
                     }
 
-                    prevScore = data.score;
-                    displayedCount++;
+                    alreadySubmitted = true;
 
-                    if (rank > 50) return;
 
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
+                    setTimeout(() => {
+                        closeSubmit();
+                        loadLeaderboard();
+                        btnYes.disabled = false;
+                        btnNo.disabled = false;
+                        spinner.style.display = "none";
+                    }, 1000);
+
+                } catch (err) {
+                    console.error(err);
+                    alert("Error submitting score.");
+                    btnYes.disabled = false;
+                    btnNo.disabled = false;
+                    spinner.style.display = "none";
+                }
+            }
+
+
+
+            async function loadLeaderboard() {
+                const tbody = document.getElementById("leaderboardBody");
+                tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+
+                try {
+                    const snapshot = await db.collection("scores")
+                        .orderBy("score", "desc")
+                        .get();
+
+                    if (snapshot.empty) {
+                        tbody.innerHTML = "<tr><td colspan='4'>No scores yet</td></tr>";
+                        return;
+                    }
+
+                    tbody.innerHTML = "";
+
+                    let prevScore = null;
+                    let rank = 0;
+                    let displayedCount = 0;
+
+                    snapshot.forEach((doc, index) => {
+                        const data = doc.data();
+
+                        if (data.score !== prevScore) {
+                            rank = displayedCount + 1;
+                        }
+
+                        prevScore = data.score;
+                        displayedCount++;
+
+                        if (rank > 50) return;
+
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
         <td style="padding:8px;">${rank}</td>
         <td style="padding:8px;">${data.name}</td>
         <td style="padding:8px;">${data.country}</td>
         <td style="padding:8px;">${data.score}</td>
       `;
-                    tbody.appendChild(tr);
-                });
+                        tbody.appendChild(tr);
+                    });
 
-            } catch (err) {
-                console.error(err);
-                tbody.innerHTML = "<tr><td colspan='4' style='text-align:center'>Error loading leaderboard</td></tr>";
-            }
-        }
-
-
-
-
-        window.addEventListener("load", () => {
-            loadLeaderboard();
-        });
-
-
-        // ============================
-        // CONFIG
-        // ============================
-        const WIDTH = 1200, HEIGHT = 720;
-        const FPS = 60;
-        const SPAWN_FRAMES = 90;
-
-        const GRAVITY = 0.075;
-        const JUMP = -2.75;
-        const PIPE_GAP_START = 300;
-        const PIPE_GAP_MIN = 350;
-        const PIPE_SPEED_START = 2.0;
-        const PIPE_SPEED_MAX = 5.0;
-
-        const POINT_PIPE = 1;
-        const POINT_CROISSANT = 2;
-        const POINT_FRIES = 3;
-        const POINT_JOB = -4;
-        const POINT_SAMOSA = -2;
-        const POINT_POOP = 2;
-
-        const DAY_NIGHT_PERIOD_SEC = 40;
-
-        // Pipes visuals
-        const PIPE_BODY = "#56B04B";
-        const PIPE_SIDE = "#3E8C37";
-        const PIPE_CAP = "#3C7830";
-        const GROUND_COLOR = "#DED895";
-        const PIPE_W = 60;
-        const CAP_H = 16;
-        const SIDE_W = 10;
-        const GROUND_HEIGHT = 0;
-
-        let streak = 0;               // counts consecutive positives
-        let multiplier = 1;           // current score multiplier
-        let multiplierTimer = 0;      // for flashing on screen
-        let multiplierText = "";      // "2x" or "3x"
-
-
-        // ============================
-        // CANVAS
-        // ============================
-        const canvas = document.getElementById("game");
-        const ctx = canvas.getContext("2d");
-
-
-
-        // ============================
-        // MUSIC / JUKEBOX SETUP
-        // ============================
-        let musicOn = false;
-        const songs = [
-            "assets/bg_music_1.mp3",
-            "assets/bg_music_2.mp3",
-            "assets/bg_music_3.mp3",
-            "assets/bg_music_4.mp3"
-        ];
-        let currentSong = 0;
-
-        const music = new Audio(songs[currentSong]);
-        music.loop = true;
-        music.volume = 0;
-        const targetVolume = 0.1;
-        let fadeInterval = null;
-
-        // Music icon & jukebox buttons dimensions
-        const iconX = 20, iconY = HEIGHT - 50, iconSize = 32;
-        const prevX = 60, nextX = 100, btnY = HEIGHT - 50, btnSize = 32;
-
-        // ============================
-        // FADE FUNCTION
-        // ============================
-        function fadeMusic(toVolume, duration = 500, callback) {
-            if (fadeInterval) clearInterval(fadeInterval);
-
-            const startVolume = music.volume;
-            const diff = toVolume - startVolume;
-            const steps = 20;
-            const stepTime = duration / steps;
-            let stepCount = 0;
-
-            fadeInterval = setInterval(() => {
-                stepCount++;
-                music.volume = startVolume + (diff * stepCount / steps);
-                if (stepCount >= steps) {
-                    music.volume = toVolume;
-                    clearInterval(fadeInterval);
-                    fadeInterval = null;
-                    if (toVolume === 0) music.pause();
-                    if (callback) callback();
+                } catch (err) {
+                    console.error(err);
+                    tbody.innerHTML = "<tr><td colspan='4' style='text-align:center'>Error loading leaderboard</td></tr>";
                 }
-            }, stepTime);
-        }
-
-        // ============================
-        // CHANGE SONG FUNCTION
-        // ============================
-        function playSong(index) {
-            index = (index + songs.length) % songs.length; 
-            currentSong = index;
-
-            if (musicOn) {
-                fadeMusic(0, 300, () => { 
-                    music.src = songs[currentSong];
-                    music.play();
-                    fadeMusic(targetVolume, 500); 
-                });
-            } else {
-                music.src = songs[currentSong]; 
             }
-        }
 
-        // ============================
-        // CANVAS CLICK HANDLER
-        // ============================
-        canvas.addEventListener("click", (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
-            const my = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-            // Toggle music
-            if (mx >= iconX && mx <= iconX + iconSize && my >= iconY && my <= iconY + iconSize) {
+
+
+            window.addEventListener("load", () => {
+                loadLeaderboard();
+            });
+
+
+            // ============================
+            // CONFIG
+            // ============================
+            const WIDTH = 1200, HEIGHT = 720;
+            const FPS = 60;
+            const SPAWN_FRAMES = 90;
+
+            const GRAVITY = 0.075;
+            const JUMP = -2.75;
+            const PIPE_GAP_START = 300;
+            const PIPE_GAP_MIN = 350;
+            const PIPE_SPEED_START = 2.0;
+            const PIPE_SPEED_MAX = 5.0;
+
+            const POINT_PIPE = 1;
+            const POINT_CROISSANT = 2;
+            const POINT_FRIES = 3;
+            const POINT_JOB = -4;
+            const POINT_SAMOSA = -2;
+            const POINT_POOP = 2;
+            const POINT_COFFEE = 2;
+            const POINT_FERRET = -6;
+            const POINT_SADCHAIR = -3;
+
+            const DAY_NIGHT_PERIOD_SEC = 40;
+
+            // Pipes visuals
+            const PIPE_BODY = "#56B04B";
+            const PIPE_SIDE = "#3E8C37";
+            const PIPE_CAP = "#3C7830";
+            const GROUND_COLOR = "#DED895";
+            const PIPE_W = 60;
+            const CAP_H = 16;
+            const SIDE_W = 10;
+            const GROUND_HEIGHT = 0;
+
+            let streak = 0;
+            let multiplier = 1;
+            let multiplierTimer = 0;
+            let multiplierText = "";
+
+            // --- power-up: Sad Chair (invincibility) ---
+            let invincible = false;
+            let invincibleUntil = 0;
+            const INVINCIBLE_MS = 12_000;
+
+            const copesmokeImg = new Image();
+            copesmokeImg.src = "assets/copesmoke.png";
+
+
+            const copesmokeSound = new Audio("assets/copesmoke_powerup.mp3");
+            copesmokeSound.volume = 0.05;
+
+
+            // ============================
+            // CANVAS
+            // ============================
+            const canvas = document.getElementById("game");
+            const ctx = canvas.getContext("2d");
+
+
+            function toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    // Enter fullscreen
+                    if (canvas.requestFullscreen) {
+                        canvas.requestFullscreen();
+                    } else if (canvas.webkitRequestFullscreen) {
+                        canvas.webkitRequestFullscreen();
+                    } else if (canvas.msRequestFullscreen) {
+                        canvas.msRequestFullscreen();
+                    }
+                } else {
+                    // Exit fullscreen
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+            }
+
+            btnFullscreen.addEventListener("click", toggleFullscreen);
+
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key.toLowerCase() === "f") {
+                    toggleFullscreen();
+                }
+            });
+
+
+
+
+            // ============================
+            // MUSIC / JUKEBOX SETUP
+            // ============================
+            let musicOn = false;
+            const songs = [
+                "assets/bg_music_6.mp3",
+                "assets/bg_music_2.mp3",
+                "assets/bg_music_5.mp3",
+                "assets/bg_music_4.mp3"
+            ];
+            let currentSong = 0;
+
+            const music = new Audio(songs[currentSong]);
+            music.loop = true;
+            music.volume = 0;
+            const targetVolume = 0.05;
+            let fadeInterval = null;
+
+            // Music icon & jukebox buttons dimensions
+            const iconX = 20, iconY = HEIGHT - 50, iconSize = 32;
+            const prevX = 60, nextX = 100, btnY = HEIGHT - 50, btnSize = 32;
+
+            // ============================
+            // FADE FUNCTION
+            // ============================
+            function fadeMusic(toVolume, duration = 500, callback) {
+                if (fadeInterval) clearInterval(fadeInterval);
+
+                const startVolume = music.volume;
+                const diff = toVolume - startVolume;
+                const steps = 20;
+                const stepTime = duration / steps;
+                let stepCount = 0;
+
+                fadeInterval = setInterval(() => {
+                    stepCount++;
+                    music.volume = startVolume + (diff * stepCount / steps);
+                    if (stepCount >= steps) {
+                        music.volume = toVolume;
+                        clearInterval(fadeInterval);
+                        fadeInterval = null;
+                        if (toVolume === 0) music.pause();
+                        if (callback) callback();
+                    }
+                }, stepTime);
+            }
+
+            // ============================
+            // CHANGE SONG FUNCTION
+            // ============================
+            function playSong(index) {
+                index = (index + songs.length) % songs.length;
+                currentSong = index;
+
+                if (musicOn) {
+                    fadeMusic(0, 300, () => {
+                        music.src = songs[currentSong];
+                        music.play();
+                        fadeMusic(targetVolume, 500);
+                    });
+                } else {
+                    music.src = songs[currentSong];
+                }
+            }
+
+            // ============================
+            // CANVAS CLICK HANDLER
+            // ============================
+            canvas.addEventListener("click", (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+                const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+                // Toggle music
+                if (mx >= iconX && mx <= iconX + iconSize && my >= iconY && my <= iconY + iconSize) {
+                    musicOn = !musicOn;
+                    if (musicOn) {
+                        music.play();
+                        fadeMusic(targetVolume, 500);
+                    } else {
+                        fadeMusic(0, 500);
+                    }
+                }
+
+
+                // Previous track
+                if (mx >= prevX && mx <= prevX + btnSize && my >= btnY && my <= btnY + btnSize) {
+                    playSong(currentSong - 1);
+                }
+
+                // Next track
+                if (mx >= nextX && mx <= nextX + btnSize && my >= btnY && my <= btnY + btnSize) {
+                    playSong(currentSong + 1);
+                }
+            });
+            // ============================
+            // KEYBOARD SHORTCUTS
+            // ============================
+            document.addEventListener("keydown", (e) => {
+                if (e.key.toLowerCase() === "m") {
+                    toggleMusic();
+                }
+                else if (e.key === "ArrowRight") {
+                    playSong(currentSong + 1);
+                }
+                else if (e.key === "ArrowLeft") {
+                    playSong(currentSong - 1);
+                }
+            });
+            // ============================
+            // TOGGLE MUSIC FUNCTION
+            // ============================
+            function toggleMusic() {
                 musicOn = !musicOn;
                 if (musicOn) {
                     music.play();
@@ -690,763 +966,1129 @@
                 }
             }
 
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
 
-            // Previous track
-            if (mx >= prevX && mx <= prevX + btnSize && my >= btnY && my <= btnY + btnSize) {
-                playSong(currentSong - 1);
-            }
+                    fadeMusic(0, 300);
+                } else {
 
-            // Next track
-            if (mx >= nextX && mx <= nextX + btnSize && my >= btnY && my <= btnY + btnSize) {
-                playSong(currentSong + 1);
-            }
-        });
-        // ============================
-        // KEYBOARD SHORTCUTS
-        // ============================
-        document.addEventListener("keydown", (e) => {
-            if (e.key.toLowerCase() === "m") {
-                toggleMusic();
-            }
-            else if (e.key === "ArrowRight") {
-                playSong(currentSong + 1); 
-            }
-            else if (e.key === "ArrowLeft") {
-                playSong(currentSong - 1); 
-            }
-        });
-        // ============================
-        // TOGGLE MUSIC FUNCTION
-        // ============================
-        function toggleMusic() {
-            musicOn = !musicOn;
-            if (musicOn) {
-                music.play();
-                fadeMusic(targetVolume, 500);
-            } else {
-                fadeMusic(0, 500);
-            }
-        }
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-
-                fadeMusic(0, 300);
-            } else {
-
-                if (musicOn) fadeMusic(targetVolume, 500);
-            }
-        });
-
-
-
-
-
-
-
-
-        const coinSound = new Audio("assets/coin.mp3");
-        coinSound.volume = 0.25;
-        const gameOverSound = new Audio("assets/dead.mp3");
-        gameOverSound.volume = 0.15;
-
-
-
-
-
-
-
-
-
-        // ============================
-        // HUD DRAW FUNCTION
-        // ============================
-        function drawMusicHUD(ctx) {
-
-            ctx.fillStyle = "#fff";
-            ctx.font = "28px Arial";
-            ctx.textBaseline = "top";
-            const icon = musicOn ? "🎵" : "🔇";
-            ctx.fillText(icon, iconX, iconY);
-
-
-            ctx.fillText("⏮️", prevX, btnY);
-            ctx.fillText("⏭️", nextX, btnY);
-
-
-            ctx.font = "18px Arial";
-            ctx.fillText(`Track ${currentSong + 1}`, 150, btnY + 4);
-        }
-
-
-
-
-
-        // ============================
-        // STATE
-        // ============================
-        let faceImg, croissantImg, friesImg, jobImg, samosaImg, poopImg, pipeImg;
-
-        let faceX = 100, faceY = HEIGHT / 2, faceVel = 0;
-        const FACE_W = 60, FACE_H = 60;
-
-        let pipes = [];
-        let items = [];
-        let clouds = [];
-        let stars = [];
-
-        let score = 0;
-        let croissantCount = 0;
-        let friesCount = 0;
-        let jobCount = 0;
-        let samosaCount = 0;
-        let poopCount = 0;
-        let pipeCount = 0;
-
-        let pipeGap = PIPE_GAP_START;
-        let pipeSpeed = PIPE_SPEED_START;
-        let spawnTimer = 0;
-
-        let running = true;
-        let gameOver = false;
-        let started = false;
-
-        // score flash
-        let lastScoreChange = 0;
-        let lastChangeTime = 0;
-
-        // timing
-        let lastFrameTime = 0;
-
-        // ============================
-        // ASSETS
-        // ============================
-        function loadImage(path) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.onload = () => resolve(img);
-                img.onerror = (e) => reject(e);
-                img.src = path;
+                    if (musicOn) {
+                        if (music.paused) music.play();
+                        fadeMusic(targetVolume, 500);
+                    }
+                }
             });
-        }
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    // stop all sfx immediately
+                    [coinSound, gameOverSound].forEach(s => {
+                        s.pause();
+                        s.currentTime = 0;
+                    });
+                } else {
 
-        async function loadAssets() {
-            [
-                faceImg,
-                croissantImg,
-                friesImg,
-                jobImg,
-                samosaImg,
-                poopImg,
-                pipeImg
-            ] = await Promise.all([
-                loadImage("assets/face_2.png"),
-                loadImage("assets/croissant.png"),
-                loadImage("assets/fries.png"),
-                loadImage("assets/contract.png"),
-                loadImage("assets/samosa.png"),
-                loadImage("assets/poop.png"),
-                loadImage("assets/pipe.png"),
-            ]);
-        }
 
-        // ============================
-        // HELPERS
-        // ============================
-        function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
-        function nowSec() { return performance.now() / 1000; }
-
-        function reset() {
-            pipes.length = 0;
-            items.length = 0;
-
-            faceX = 100;
-            faceY = HEIGHT / 2;
-            faceVel = 0;
-
-            score = 0;
-            croissantCount = 0;
-            friesCount = 0;
-            jobCount = 0;
-            samosaCount = 0;
-            poopCount = 0;
-            pipeCount = 0;
-
-            pipeGap = PIPE_GAP_START;
-            pipeSpeed = PIPE_SPEED_START;
-            spawnTimer = 0;
-
-            gameOver = false;
-            started = false;
-
-            // Clouds
-            clouds = Array.from({ length: 5 }, () => ({
-                x: randInt(0, WIDTH),
-                y: randInt(30, 120),
-            }));
-
-            // Stars
-            stars = [];
-            for (let i = 0; i < 50; i++) {
-                stars.push({
-                    x: randInt(0, WIDTH),
-                    y: randInt(0, Math.floor(HEIGHT / 2)),
-                    size: randInt(1, 3),
-                    color: [
-                        [255, 255, 200],
-                        [200, 220, 255],
-                        [255, 220, 200]
-                    ][randInt(0, 2)]
-                });
-            }
-        }
-
-        function currentSpacingPixels(speed) {
-            return Math.floor(speed * SPAWN_FRAMES);
-        }
-
-        function spawnPipeAndItems() {
-            const gapY = randInt(80 + (pipeGap >> 1), HEIGHT - 80 - (pipeGap >> 1));
-            const pipeX = WIDTH;
-            pipes.push({ x: pipeX, gapY, scored: false });
-
-            const safeTop = 40;
-            const safeBottom = HEIGHT - 40;
-            const spacingPx = Math.max(140, currentSpacingPixels(pipeSpeed));
-            const base = pipeX + 40;
-            const limit = pipeX + Math.max(80, spacingPx - 60);
-
-            function placeItem(kind) {
-                const x = randInt(base, limit);
-                const y = randInt(safeTop, safeBottom);
-                items.push({ x, y, type: kind });
-            }
-
-            // always a croissant
-            placeItem("croissant");
-            // maybe fries
-            if (Math.random() < 0.5) placeItem("fries");
-
-            // job probability grows with croissant+fries
-            const jobProb = Math.min(0.15 + 0.02 * (croissantCount + friesCount), 0.6);
-            if (Math.random() < jobProb) placeItem("job");
-
-            // samosa 30%
-            if (Math.random() < 0.3) placeItem("samosa");
-
-            // poop 20%
-            if (Math.random() < 0.2) placeItem("poop");
-        }
-
-        // ============================
-        // DRAWING
-        // ============================
-        function drawGradientBackground() {
-            const t = nowSec();
-            const phase = (Math.sin((2 * Math.PI * t) / DAY_NIGHT_PERIOD_SEC) + 1) / 2;
-
-            const topColor = [
-                Math.round(0 * (1 - phase) + 0 * phase),
-                Math.round(50 * (1 - phase) + 0 * phase),
-                Math.round(150 * (1 - phase) + 20 * phase),
-            ];
-            const bottomColor = [
-                Math.round(150 * (1 - phase) + 0 * phase),
-                Math.round(200 * (1 - phase) + 0 * phase),
-                Math.round(255 * (1 - phase) + 20 * phase),
-            ];
-
-            const grad = ctx.createLinearGradient(0, 0, 0, HEIGHT);
-            grad.addColorStop(0, `rgb(${topColor.join(",")})`);
-            grad.addColorStop(1, `rgb(${bottomColor.join(",")})`);
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-            // Daytime clouds
-            if (phase < 0.5) {
-                for (const c of clouds) {
-                    // shadow
-                    ctx.fillStyle = "rgb(180,180,180)";
-                    ctx.beginPath();
-                    ctx.ellipse(c.x + 5, c.y + 5, 40, 20, 0, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // main fluffy body
-                    ctx.fillStyle = "white";
-                    ctx.beginPath();
-                    ctx.ellipse(c.x, c.y, 40, 20, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.ellipse(c.x - 20, c.y + 5, 25, 15, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.ellipse(c.x + 40, c.y + 5, 25, 15, 0, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    c.x -= 0.2;
-                    if (c.x < -100) {
-                        c.x = WIDTH + randInt(0, 50);
-                        c.y = randInt(30, 120);
+                    if (!sfxOn) {
+                        [coinSound, gameOverSound].forEach(s => s.volume = 0);
+                    } else {
+                        coinSound.volume = 0.25;
+                        gameOverSound.volume = 0.15;
                     }
+                }
+            });
+
+
+
+
+
+            const coinSound = new Audio("assets/coin.mp3");
+            coinSound.volume = 0.1;
+            const gameOverSound = new Audio("assets/dead.mp3");
+            gameOverSound.volume = 0.035;
+
+
+
+
+            const sfxX = 200, sfxY = HEIGHT - 50, sfxSize = 32;
+            let sfxOn = true;
+
+            function playSfx(sound) {
+                if (sfxOn) {
+                    sound.currentTime = 0; // restart
+                    sound.play();
                 }
             }
 
-            // Nighttime stars
-            if (phase > 0.5) {
-                for (const s of stars) {
-                    const brightness = Math.max(180, Math.min(255, Math.floor(200 + 55 * Math.sin(performance.now() / 1000 * 3 + s.x))));
-                    const r = Math.min(255, Math.floor(s.color[0] * brightness / 255));
-                    const g = Math.min(255, Math.floor(s.color[1] * brightness / 255));
-                    const b = Math.min(255, Math.floor(s.color[2] * brightness / 255));
-                    ctx.fillStyle = `rgb(${r},${g},${b})`;
-                    ctx.beginPath();
-                    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                    ctx.fill();
 
-                    if (s.size > 2) {
-                        ctx.fillRect(s.x - 2, s.y, 4, 1);
-                        ctx.fillRect(s.x, s.y - 2, 1, 4);
-                    }
+            // Toggle SFX with "S" key
+            document.addEventListener("keydown", (e) => {
+                if (e.key.toLowerCase() === "s") {
+                    sfxOn = !sfxOn;
+                    console.log("SFX " + (sfxOn ? "ON" : "OFF"));
                 }
-            }
-        }
+            });
 
-        function drawPipes() {
-            for (const p of pipes) {
-                const x = Math.floor(p.x);
-                const gapY = p.gapY;
-                const topH = gapY - (pipeGap >> 1);
-                const botY = gapY + (pipeGap >> 1);
+            canvas.addEventListener("click", (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+                const my = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-                // bodies
-                ctx.fillStyle = PIPE_BODY;
-                ctx.fillRect(x, 0, PIPE_W, topH);
-                ctx.fillRect(x, botY, PIPE_W, HEIGHT - botY);
 
-                // side shading
-                ctx.fillStyle = PIPE_SIDE;
-                ctx.fillRect(x + PIPE_W - SIDE_W, 0, SIDE_W, topH);
-                ctx.fillRect(x + PIPE_W - SIDE_W, botY, SIDE_W, HEIGHT - botY);
 
-                // caps
-                ctx.fillStyle = PIPE_CAP;
-                ctx.fillRect(x - 4, topH - CAP_H, PIPE_W + 8, CAP_H);
-                ctx.fillRect(x - 4, botY, PIPE_W + 8, CAP_H);
-            }
-        }
+                // --- NEW: Toggle SFX ---
+                if (mx >= sfxX && mx <= sfxX + sfxSize && my >= sfxY && my <= sfxY + sfxSize) {
+                    sfxOn = !sfxOn;
+                }
+            });
 
-        function drawItems() {
-            for (const it of items) {
-                const x = Math.floor(it.x), y = Math.floor(it.y);
-                let img = croissantImg;
-                if (it.type === "fries") img = friesImg;
-                else if (it.type === "job") img = jobImg;
-                else if (it.type === "samosa") img = samosaImg;
-                else if (it.type === "poop") img = poopImg;
-                ctx.drawImage(img, x, y, 32, 32);
-            }
-        }
 
-        function drawHUD() {
-            const spacing = 100;
-            const startX = 20;
-            const y = 10;
+            // ============================
+            // HUD DRAW FUNCTION
+            // ============================
+            function drawMusicHUD(ctx) {
+                ctx.fillStyle = "#fff";
+                ctx.font = "28px Arial";
+                ctx.textBaseline = "top";
 
-            const list = [
-                { img: croissantImg, count: croissantCount, positive: true },
-                { img: friesImg, count: friesCount, positive: true },
-                { img: samosaImg, count: samosaCount, positive: false },
-                { img: poopImg, count: poopCount, positive: true },
-                { img: jobImg, count: jobCount, positive: false },
-            ];
+                // Music toggle
+                const musicIcon = musicOn ? "🎵" : "🔇";
+                ctx.fillText(musicIcon, iconX, iconY);
 
-            ctx.textBaseline = "top";
-            ctx.font = "bold 20px system-ui, Arial";
-            for (let i = 0; i < list.length; i++) {
-                const x = startX + i * spacing;
-                ctx.drawImage(list[i].img, x, y, 32, 32);
-                ctx.fillStyle = list[i].positive ? "#00ff00" : "#ff0000";
-                ctx.fillText(String(list[i].count), x + 40, y + 5);
-            }
+                // Track controls
+                ctx.fillText("⏮️", prevX, btnY);
+                ctx.fillText("⏭️", nextX, btnY);
 
-            // Score with flash
-            const t = performance.now() / 1000;
-            let color = "#ffff00";
-            if (t - lastChangeTime < 0.5) {
-                color = lastScoreChange > 0 ? "#00ff00" : (lastScoreChange < 0 ? "#ff0000" : "#ffff00");
-            }
-            ctx.font = "bold 28px system-ui, Arial";
-            const text = String(score);
-            const tw = ctx.measureText(text).width;
-            ctx.fillStyle = color;
-            ctx.fillText(text, WIDTH / 2 - tw / 2, 50);
-            // Draw multiplier flash
-            // Draw multiplier animation
-            if (multiplier > 1) {
-                const t = performance.now() / 1000;
-                const elapsed = t - multiplierTimer;
+                ctx.font = "18px Arial";
+                ctx.fillText(`Track ${currentSong + 1}`, 150, btnY + 4);
 
-                if (elapsed < 1) { // show for 1 second
-                    // Zoom effect: start bigger and shrink to normal
-                    const scale = 1 + 0.5 * Math.sin(Math.PI * (1 - elapsed));
+                // --- NEW: SFX toggle ---
+                ctx.font = "28px Arial";
+                const sfxIcon = sfxOn ? "🔊" : "🔈";
+                ctx.fillText(sfxIcon, sfxX, sfxY);
 
-                    // Wobble effect: horizontal shift
-                    const wobble = Math.sin(elapsed * 10) * 10; // ±10px
+                // --- Add text label ---
+                ctx.font = "16px Arial";
+                ctx.fillText("SFX", sfxX + 40, sfxY + 5);
 
-                    // Fade out
-                    const alpha = 1 - elapsed;
+
+
+                if (invincible) {
+                    const msLeft = Math.max(0, invincibleUntil - performance.now());
+                    const sLeft = Math.ceil(msLeft / 1000);
+                    ctx.fillStyle = "rgba(0, 80 , 255, 0.1)";
+                    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
 
                     ctx.save();
-                    ctx.globalAlpha = alpha;
-                    ctx.font = "bold 36px system-ui, Arial";
-                    ctx.fillStyle = "#ff0";
+                    ctx.strokeStyle = "rgba(255, 215, 0, 0.9)";
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.arc(faceX + FACE_W / 2, faceY + FACE_H / 2, Math.max(FACE_W, FACE_H) / 2 + 6, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.restore();
 
-                    // Move to center, apply scale
-                    const tw = ctx.measureText(multiplierText).width;
-                    ctx.translate(WIDTH / 2 + wobble, 100);
-                    ctx.scale(scale, scale);
-                    ctx.fillText(multiplierText, -tw / 2, 0);
+
+                    ctx.save();
+                    ctx.font = "bold 32px Arial";
+                    ctx.fillStyle = "#ffd700";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "top";
+
+                    // shadow/glow effect
+                    ctx.shadowColor = "black";
+                    ctx.shadowBlur = 8;
+
+                    ctx.fillText(`✨ COPESMOKE INVINCIBILITY! ✨ (${sLeft}s)`, WIDTH / 2, 666);
                     ctx.restore();
                 }
-            }
-            // draw jukebox/music controls
-            drawMusicHUD(ctx);
-
-        }
-        let overlayShown = false;
-        function drawGameOver() {
-            // Background overlay
-            ctx.fillStyle = "rgba(0,0,0,0.6)";
-            ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-            // Main title
-            ctx.fillStyle = "#fffa";
-            ctx.font = "bold 48px system-ui, Arial";
-            ctx.textAlign = "center";
-            ctx.fillText("Game Over", WIDTH / 2, HEIGHT / 4);
-
-            // Final score
-            ctx.fillStyle = "#fff";
-            ctx.font = "bold 36px system-ui, Arial";
-            ctx.fillText(`Final Score: ${score}`, WIDTH / 2, HEIGHT / 4 + 50);
-
-            // Counters block
-            let offsetY = HEIGHT / 4 + 100;
-            const step = 50;
-
-            function row(img, value, label) {
-                // Background rounded rectangle
-                ctx.fillStyle = "rgba(0,0,0,0.3)";
-                ctx.beginPath();
-                ctx.roundRect(WIDTH / 2 - 110, offsetY, 200, 40, 10);
-                ctx.fill();
-
-                // Icon shadow
-                ctx.shadowColor = "rgba(0,0,0,0.5)";
-                ctx.shadowBlur = 4;
-                ctx.drawImage(img, WIDTH / 2 - 90, offsetY, 32, 32);
-                ctx.shadowBlur = 0;
-
-                // Value
-                ctx.fillStyle = "#fff";
-                ctx.font = "24px system-ui, Arial";
-                ctx.fillText(`${label}: ${value}`, WIDTH / 2, offsetY + 8);
-
-                offsetY += step;
-            }
-
-            row(croissantImg, croissantCount, "Croissant");
-            row(friesImg, friesCount, "Fries");
-            row(jobImg, jobCount, "Job");
-            row(samosaImg, samosaCount, "Samosa");
-            row(poopImg, poopCount, "Poop");
-
-            // ---- Pipe row (custom drawing) ---- 
-            const px = WIDTH / 2 - 70, py = offsetY + 20, pw = 16, ph = 24;
-            // Body 
-            ctx.fillStyle = "#0a0"; // green 
-            ctx.fillRect(px, py, pw, ph);
-            // Side shading 
-            ctx.fillStyle = "#060";
-            ctx.fillRect(px + pw - 6, py, 6, ph);
-            // Cap 
-            ctx.fillStyle = "#080";
-            ctx.fillRect(px - 2, py - 6, pw + 4, 6);
-            // Cap highlight 
-            ctx.fillStyle = "#0c0";
-            ctx.fillRect(px + 4, py - 4, pw - 8, 2);
-
-            // Pipe score
-            ctx.fillStyle = "#fff";
-            ctx.fillText(`Pipes: ${pipeCount}`, WIDTH / 2, offsetY + 20);
-            offsetY += step;
-
-            // Restart button
-            ctx.fillStyle = "rgba(255,255,255,0.2)";
-            ctx.fillRect(WIDTH / 2 - 120, offsetY + 25, 240, 50);
-            ctx.fillStyle = "#fff";
-            ctx.font = "bold 28px system-ui, Arial";
-            ctx.fillText("Press R to Restart", WIDTH / 2, offsetY + 34);
-
-            streak = 0;
-
-
-            if (!overlayShown) {
-                showSubmitOverlay(score);
-                overlayShown = true;
-            }
-        }
-
-
-
-        // ============================
-        // INPUT
-        // ============================
-        function flap() {
-            if (!gameOver) {
-                started = true;
-                faceVel = JUMP;
-                overlayShown = false;
-                alreadySubmitted = false;
 
             }
-        }
 
 
 
-        window.addEventListener("keydown", (e) => {
-            if (overlayVisible) {
-                if (e.code === "Escape") {
-                    e.preventDefault();
-                    closeSubmit();
-                }
 
-                return;
+            // ============================
+            // STATE
+            // ============================
+            let faceImg, croissantImg, friesImg, jobImg, samosaImg, poopImg, pipeImg, ferretImg, sadchairImg, coffeeImg;
+
+            let faceX = 100, faceY = HEIGHT / 2, faceVel = 0;
+            const FACE_W = 60, FACE_H = 60;
+
+            let arrows = [];
+            const arrowImg = new Image();
+            arrowImg.src = "assets/yellowarrow.png";
+
+
+            let blinkActive = false;
+            let blinkEndTime = 0;
+            let blinkInterval = 0;
+
+            let life = 100;
+            const MAX_LIFE = 100;
+
+
+            let pipes = [];
+            let items = [];
+            let clouds = [];
+            let stars = [];
+
+            let score = 0;
+            let croissantCount = 0;
+            let coffeeCount = 0;
+            let friesCount = 0;
+            let jobCount = 0;
+            let ferretCount = 0;
+            let sadchairCount = 0;
+            let samosaCount = 0;
+            let poopCount = 0;
+            let pipeCount = 0;
+
+            let pipeGap = PIPE_GAP_START;
+            let pipeSpeed = PIPE_SPEED_START;
+            let spawnTimer = 0;
+
+            let running = true;
+            let gameOver = false;
+            let started = false;
+
+            // score flash
+            let lastScoreChange = 0;
+            let lastChangeTime = 0;
+
+            // timing
+            let lastFrameTime = 0;
+
+            // ============================
+            // ASSETS
+            // ============================
+            function loadImage(path) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.onerror = (e) => reject(e);
+                    img.src = path;
+                });
             }
 
-            // Normal gameplay keys
-            if (e.code === "Space") { e.preventDefault(); flap(); }
-            if (e.code === "KeyR" && gameOver) reset();
-        });
-        document.getElementById("btnStart").onclick = flap;
-        document.getElementById("btnJump").onclick = flap;
-        document.getElementById("btnReset").onclick = () => { if (gameOver) reset(); };
-        document.getElementById("btnMute").onclick = () => {
-    toggleMusic();
+            async function loadAssets() {
+                [
+                    faceImg,
+                    croissantImg,
+                    friesImg,
+                    jobImg,
+                    samosaImg,
+                    poopImg,
+                    pipeImg,
+                    ferretImg,
+                    sadchairImg,
+                    coffeeImg
+                ] = await Promise.all([
+                    loadImage("assets/face_2.png"),
+                    loadImage("assets/croissant.png"),
+                    loadImage("assets/fries.png"),
+                    loadImage("assets/contract.png"),
+                    loadImage("assets/samosa.png"),
+                    loadImage("assets/poop.png"),
+                    loadImage("assets/pipe.png"),
+                    loadImage("assets/ferret.png"),
+                    loadImage("assets/sad_chair.png"),
+                    loadImage("assets/coffee.png"),
+
+                ]);
+            }
 
 
-    document.getElementById("btnMute").textContent = musicOn ? "Mute (M)" : "Unmute (M)";
-};
+            const crossbowImg = new Image();
+            crossbowImg.src = "assets/crossbow.png";
 
-        canvas.addEventListener("click", (e) => {
-            handleInput(e.clientX, e.clientY);
-        });
+            function triggerBlink() {
+                blinkActive = true;
+                blinkEndTime = performance.now() + 400;
+                blinkInterval = 100;
+            }
 
-        // ============================
-        // GAME LOOP
-        // ============================
-        function update(dt) {
-            if (gameOver || !started) return;
+            // ============================
+            // HELPERS
+            // ============================
+            function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+            function nowSec() { return performance.now() / 1000; }
 
-            faceVel += GRAVITY;
-            faceY += faceVel;
+            function reset() {
+                pipes.length = 0;
+                items.length = 0;
+                arrows.length = 0;
 
-            spawnTimer += 1;
-            if (spawnTimer >= SPAWN_FRAMES) {
-                spawnPipeAndItems();
+                faceX = 100;
+                faceY = HEIGHT / 2;
+                faceVel = 0;
+
+                score = 0;
+                croissantCount = 0;
+                coffeeCount = 0;
+                friesCount = 0;
+                jobCount = 0;
+                samosaCount = 0;
+                ferretCount = 0;
+                sadchairCount = 0;
+                poopCount = 0;
+                pipeCount = 0;
+
+                pipeGap = PIPE_GAP_START;
+                pipeSpeed = PIPE_SPEED_START;
                 spawnTimer = 0;
+
+                gameOver = false;
+                started = false;
+
+                invincible = false;
+                invincibleUntil = 0;
+
+                life = MAX_LIFE;
+
+
+      
+                multiplier = 1;
+                multiplierText = "";
+                multiplierTimer = 0;
+                // Clouds
+                clouds = Array.from({ length: 5 }, () => ({
+                    x: randInt(0, WIDTH),
+                    y: randInt(30, 120),
+                }));
+
+                // Stars
+                stars = [];
+                for (let i = 0; i < 50; i++) {
+                    stars.push({
+                        x: randInt(0, WIDTH),
+                        y: randInt(0, Math.floor(HEIGHT / 2)),
+                        size: randInt(1, 3),
+                        color: [
+                            [255, 255, 200],
+                            [200, 220, 255],
+                            [255, 220, 200]
+                        ][randInt(0, 2)]
+                    });
+                }
             }
 
-            // Move pipes
-            for (let i = pipes.length - 1; i >= 0; i--) {
-                const p = pipes[i];
-                p.x -= pipeSpeed;
-
-                // Score when player passes the pipe
-                if (!p.scored && (faceX > p.x + PIPE_W)) {
-                    score += POINT_PIPE;
-                    pipeCount += 1;
-                    lastScoreChange = POINT_PIPE;
-                    lastChangeTime = performance.now() / 1000;
-                    p.scored = true;
-                }
-                // Remove off-screen
-                if (p.x + PIPE_W < 0) pipes.splice(i, 1);
+            function currentSpacingPixels(speed) {
+                return Math.floor(speed * SPAWN_FRAMES);
             }
 
-            // Move items and collisions
-            const faceRect = { x: faceX, y: faceY, w: FACE_W, h: FACE_H };
-            for (let i = items.length - 1; i >= 0; i--) {
-                const it = items[i];
-                it.x -= pipeSpeed;
-                const itRect = { x: it.x, y: it.y, w: 32, h: 32 };
+            function scaleProbability(score, min, max, cap) {
 
-                if (itRect.x + itRect.w < 0) {
-                    items.splice(i, 1);
-                    continue;
+                const t = Math.min(score / cap, 1);
+                return min + (max - min) * t;
+            }
+
+            function getItemProbabilities(score) {
+                return {
+                    croissant: scaleProbability(score, 0.4, 0.1, 300),
+                    fries: scaleProbability(score, 0.5, 0.2, 300),
+                    job: scaleProbability(score, 0.15, 0.6, 400),
+                    samosa: scaleProbability(score, 0.25, 0.45, 300),
+                    poop: scaleProbability(score, 0.20, 0.40, 300),
+                    ferret: scaleProbability(score, 0.30, 0.85, 250),
+                    sadchair: scaleProbability(score, 0.2, 0.85, 250),
+                    coffee: scaleProbability(score, 0.5, 0.2, 250),
+                };
+            }
+
+
+            function spawnPipeAndItems() {
+                const gapY = randInt(80 + (pipeGap >> 1), HEIGHT - 80 - (pipeGap >> 1));
+                const pipeX = WIDTH;
+                pipes.push({ x: pipeX, gapY, scored: false, hasCrossbow: Math.random() < 0.70 });
+
+                const safeTop = 40;
+                const safeBottom = HEIGHT - 40;
+                const spacingPx = Math.max(140, currentSpacingPixels(pipeSpeed));
+                const base = pipeX + 40;
+                const limit = pipeX + Math.max(80, spacingPx - 60);
+
+                function placeItem(kind) {
+                    const x = randInt(base, limit);
+                    const y = randInt(safeTop, safeBottom);
+                    items.push({ x, y, type: kind });
                 }
 
-                if (rectsOverlap(faceRect, itRect)) {
-                    let positiveHit = false;
+                const probs = getItemProbabilities(score);
 
-                    if (it.type === "croissant") {
-                        croissantCount++; score += POINT_CROISSANT; lastScoreChange = POINT_CROISSANT; positiveHit = true;
-                    } else if (it.type === "fries") {
-                        friesCount++; score += POINT_FRIES; lastScoreChange = POINT_FRIES; positiveHit = true;
-                    } else if (it.type === "poop") {
-                        poopCount++; score += POINT_POOP; lastScoreChange = POINT_POOP; positiveHit = true;
-                    } else if (it.type === "job") {
-                        jobCount++; score += POINT_JOB; lastScoreChange = POINT_JOB;
-                    } else if (it.type === "samosa") {
-                        samosaCount++; score += POINT_SAMOSA; lastScoreChange = POINT_SAMOSA;
-                    }
+                // roll each item type
+                if (Math.random() < probs.croissant) placeItem("croissant");
+                if (Math.random() < probs.fries) placeItem("fries");
+                if (Math.random() < probs.job) placeItem("job");
+                if (Math.random() < probs.samosa) placeItem("samosa");
+                if (Math.random() < probs.poop) placeItem("poop");
+                if (Math.random() < probs.ferret) placeItem("ferret");
+                if (Math.random() < probs.sadchair) placeItem("sadchair");
+                if (Math.random() < probs.coffee) placeItem("coffee");
 
-                    if (positiveHit && musicOn) {
-                        coinSound.currentTime = 0; // rewind so it can play rapidly
-                        coinSound.play();
-                    }
-                    // ---- Multiplier logic ----
-                    if (positiveHit) {
-                        streak++;
-                    } else {
-                        streak = 0;
-                        multiplier = 1;
-                    }
 
-                    if (streak >= 12) {
-                        multiplier = 3;
-                        multiplierText = "3x";
-                        multiplierTimer = performance.now() / 1000;
-                    } else if (streak >= 6) {
-                        multiplier = 2;
-                        multiplierText = "2x";
-                        multiplierTimer = performance.now() / 1000;
-                    } else {
-                        multiplier = 1;
-                    }
-
-                    // Apply multiplier to score
-                    if (positiveHit && multiplier > 1) {
-                        const bonus = lastScoreChange * (multiplier - 1);
-                        score += bonus;
-                        lastScoreChange += bonus;  // for HUD flash
-                    }
-
-                    lastChangeTime = performance.now() / 1000;
-                    items.splice(i, 1);
-                }
+                const copesmokeProb = 0.07; // 0.7%
+                if (Math.random() < copesmokeProb) placeItem("copesmoke");
 
             }
 
-            // Collisions with pipes
-            for (const p of pipes) {
-                const x = p.x, gapY = p.gapY;
-                const top = gapY - (pipeGap >> 1);
-                const bot = gapY + (pipeGap >> 1);
-                const withinX = (faceX + FACE_W > x) && (faceX < x + PIPE_W);
-                if (withinX) {
-                    if (faceY < top || (faceY + FACE_H) > bot) {
-                        if (!gameOver) { // ensure sound only plays once
-                            gameOver = true;
-                            if (musicOn) {
-                                gameOverSound.currentTime = 0;
-                                gameOverSound.play();
-                            }
+
+            // ============================
+            // DRAWING
+            // ============================
+            function drawGradientBackground() {
+                const t = nowSec();
+                const phase = (Math.sin((2 * Math.PI * t) / DAY_NIGHT_PERIOD_SEC) + 1) / 2;
+
+                const topColor = [
+                    Math.round(0 * (1 - phase) + 0 * phase),
+                    Math.round(50 * (1 - phase) + 0 * phase),
+                    Math.round(150 * (1 - phase) + 20 * phase),
+                ];
+                const bottomColor = [
+                    Math.round(150 * (1 - phase) + 0 * phase),
+                    Math.round(200 * (1 - phase) + 0 * phase),
+                    Math.round(255 * (1 - phase) + 20 * phase),
+                ];
+
+                const grad = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+                grad.addColorStop(0, `rgb(${topColor.join(",")})`);
+                grad.addColorStop(1, `rgb(${bottomColor.join(",")})`);
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+                // Daytime clouds
+                if (phase < 0.5) {
+                    for (const c of clouds) {
+                        // shadow
+                        ctx.fillStyle = "rgb(180,180,180)";
+                        ctx.beginPath();
+                        ctx.ellipse(c.x + 5, c.y + 5, 40, 20, 0, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // main fluffy body
+                        ctx.fillStyle = "white";
+                        ctx.beginPath();
+                        ctx.ellipse(c.x, c.y, 40, 20, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.ellipse(c.x - 20, c.y + 5, 25, 15, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.ellipse(c.x + 40, c.y + 5, 25, 15, 0, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        c.x -= 0.2;
+                        if (c.x < -100) {
+                            c.x = WIDTH + randInt(0, 50);
+                            c.y = randInt(30, 120);
                         }
-                        break;
+                    }
+                }
+
+                // Nighttime stars
+                if (phase > 0.5) {
+                    for (const s of stars) {
+                        const brightness = Math.max(180, Math.min(255, Math.floor(200 + 55 * Math.sin(performance.now() / 1000 * 3 + s.x))));
+                        const r = Math.min(255, Math.floor(s.color[0] * brightness / 255));
+                        const g = Math.min(255, Math.floor(s.color[1] * brightness / 255));
+                        const b = Math.min(255, Math.floor(s.color[2] * brightness / 255));
+                        ctx.fillStyle = `rgb(${r},${g},${b})`;
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        if (s.size > 2) {
+                            ctx.fillRect(s.x - 2, s.y, 4, 1);
+                            ctx.fillRect(s.x, s.y - 2, 1, 4);
+                        }
                     }
                 }
             }
 
-            // Out of bounds
-            if (faceY > HEIGHT || faceY < -40) {
+            function drawPipes() {
+                for (const p of pipes) {
+                    const x = Math.floor(p.x);
+                    const gapY = p.gapY;
+                    const topH = gapY - (pipeGap >> 1);
+                    const botY = gapY + (pipeGap >> 1);
+
+                    // pipe bodies
+                    ctx.fillStyle = PIPE_BODY;
+                    ctx.fillRect(x, 0, PIPE_W, topH);
+                    ctx.fillRect(x, botY, PIPE_W, HEIGHT - botY);
+
+                    // side shading
+                    ctx.fillStyle = PIPE_SIDE;
+                    ctx.fillRect(x + PIPE_W - SIDE_W, 0, SIDE_W, topH);
+                    ctx.fillRect(x + PIPE_W - SIDE_W, botY, SIDE_W, HEIGHT - botY);
+
+                    // caps
+                    ctx.fillStyle = PIPE_CAP;
+                    ctx.fillRect(x - 4, topH - CAP_H, PIPE_W + 8, CAP_H);
+                    ctx.fillRect(x - 4, botY, PIPE_W + 8, CAP_H);
+
+
+                    if (p.hasCrossbow) {
+                        ctx.drawImage(
+                            crossbowImg,
+                            x + (PIPE_W / 2) - 36,
+                            topH - 46,
+                            64,
+                            64
+                        );
+                    }
+                }
+            }
+
+            function drawItems() {
+                const t = performance.now() / 200; // time factor for wobble
+
+                for (const it of items) {
+                    const x = Math.floor(it.x), y = Math.floor(it.y);
+                    let img = croissantImg;
+                    if (it.type === "fries") img = friesImg;
+                    else if (it.type === "job") img = jobImg;
+                    else if (it.type === "samosa") img = samosaImg;
+                    else if (it.type === "poop") img = poopImg;
+                    else if (it.type === "ferret") img = ferretImg;
+                    else if (it.type === "copesmoke") img = copesmokeImg;
+                    else if (it.type === "sadchair") img = sadchairImg;
+                    else if (it.type === "coffee") img = coffeeImg;
+
+                    // wobble ferret + sadchair
+                    if (it.type === "ferret" || it.type === "sadchair") {
+                        const wobbleX = Math.sin(t + it.y * 0.1) * 4; // horizontal wiggle
+                        const wobbleY = Math.cos(t + it.x * 0.1) * 2; // vertical wiggle
+                        ctx.drawImage(img, x + wobbleX, y + wobbleY, 32, 32);
+                    } else {
+                        ctx.drawImage(img, x, y, 32, 32);
+                    }
+                }
+            }
+
+            function drawArrows() {
+                for (const a of arrows) {
+                    ctx.drawImage(arrowImg, Math.floor(a.x), Math.floor(a.y), 16, 32);
+                }
+            }
+
+            function drawLifeBar() {
+                const barWidth = 120, barHeight = 15;
+                const x = WIDTH - barWidth - 20, y = 20;
+                // Text
+                ctx.fillStyle = "white";
+                ctx.font = "16px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText(`${life}/${MAX_LIFE}`, x + barWidth / 2, y + 25);
+
+
+                // Background
+                ctx.fillStyle = "#333";
+                ctx.fillRect(x, y, barWidth, barHeight);
+
+                // Clamp lifeRatio between 0 and 1
+                const lifeRatio = Math.max(0, Math.min(1, life / MAX_LIFE));
+
+                // Life gradient (green → red)
+                const grad = ctx.createLinearGradient(x, y, x + barWidth, y);
+                grad.addColorStop(0, "red");
+                grad.addColorStop(1, "lime");
+
+                ctx.fillStyle = grad;
+                ctx.fillRect(x, y, barWidth * lifeRatio, barHeight);
+
+                // Border
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, barWidth, barHeight);
+            }
+
+
+            function drawHUD() {
+                const spacing = 100;
+                const startX = 20;
+                const y = 10;
+
+                const list = [
+                    { img: croissantImg, count: croissantCount, positive: true },
+                    { img: friesImg, count: friesCount, positive: true },
+                    { img: poopImg, count: poopCount, positive: true },
+                    { img: coffeeImg, count: coffeeCount, positive: true },
+                    { img: samosaImg, count: samosaCount, positive: false },
+                    { img: jobImg, count: jobCount, positive: false },
+                    { img: ferretImg, count: ferretCount, positive: false },
+                    { img: sadchairImg, count: sadchairCount, positive: false },
+                ];
+
+                ctx.textBaseline = "top";
+                ctx.font = "bold 20px system-ui, Arial";
+                for (let i = 0; i < list.length; i++) {
+                    const x = startX + i * spacing;
+                    ctx.drawImage(list[i].img, x, y, 32, 32);
+                    ctx.fillStyle = list[i].positive ? "#00ff00" : "#ff0000";
+                    ctx.fillText(String(list[i].count), x + 40, y + 5);
+                }
+
+                // Score with flash
+                const t = performance.now() / 1000;
+                let color = "#ffff00";
+                if (t - lastChangeTime < 0.5) {
+                    color = lastScoreChange > 0 ? "#00ff00" : (lastScoreChange < 0 ? "#ff0000" : "#ffff00");
+                }
+                ctx.font = "bold 28px system-ui, Arial";
+                const text = String(score);
+                const tw = ctx.measureText(text).width;
+                ctx.fillStyle = color;
+                ctx.fillText(text, WIDTH / 2 - tw / 2, 50);
+
+                // Multiplier flash in center
+                if (multiplier > 1) {
+                    const elapsed = t - multiplierTimer;
+                    if (elapsed < 1) {
+                        const scale = 1 + 0.5 * Math.sin(Math.PI * (1 - elapsed));
+                        const wobble = Math.sin(elapsed * 10) * 10;
+                        const alpha = 1 - elapsed;
+
+                        ctx.save();
+                        ctx.globalAlpha = alpha;
+                        ctx.font = "bold 36px system-ui, Arial";
+                        ctx.fillStyle = "#ff0";
+
+                        const tw = ctx.measureText(multiplierText).width;
+                        ctx.translate(WIDTH / 2 + wobble, 100);
+                        ctx.scale(scale, scale);
+                        ctx.fillText(multiplierText, -tw / 2, 0);
+                        ctx.restore();
+                    }
+                }
+
+         
+                if (multiplier > 1) {
+                    ctx.save();
+                    ctx.font = "bold 32px system-ui, Arial";
+                    ctx.fillStyle = "#ff0";
+                    ctx.textAlign = "right";
+                    ctx.textBaseline = "bottom";
+
+                   
+                    const badgeText = multiplier + "x";
+                    const padding = 10;
+                    const tw = ctx.measureText(badgeText).width;
+                    const bx = WIDTH - 20; 
+                    const by = HEIGHT - 50; 
+                    const bw = tw + padding * 2;
+                    const bh = 40;
+
+                    ctx.fillStyle = "rgba(0,0,0,0.6)";
+                    ctx.beginPath();
+                    ctx.roundRect(bx - bw, by - bh, bw, bh, 12);
+                    ctx.fill();
+
+                
+                    ctx.fillStyle = "#ff0";
+                    ctx.fillText(badgeText, bx - padding, by -3);
+
+                    ctx.restore();
+                }
+
+
+
+                drawMusicHUD(ctx);
+
+            }
+            let overlayShown = false;
+            function drawGameOver() {
+
+                ctx.fillStyle = "rgba(0,0,0,0.6)";
+                ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+                // Main title
+                ctx.fillStyle = "#fffa";
+                ctx.font = "bold 48px system-ui, Arial";
+                ctx.textAlign = "center";
+                ctx.fillText("Game Over", WIDTH / 2, HEIGHT / 10);
+
+                // Final score
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 36px system-ui, Arial";
+                ctx.fillText(`Final Score: ${score}`, WIDTH / 2, HEIGHT / 6);
+
+                // Counters block
+                let offsetY = HEIGHT / 5 + 10;
+                const step = 50;
+
+                function row(img, value, label) {
+                
+                    ctx.fillStyle = "rgba(0,0,0,0.3)";
+                    ctx.beginPath();
+                    ctx.roundRect(WIDTH / 2 - 110, offsetY, 200, 40, 10);
+                    ctx.fill();
+
+                    // Icon shadow
+                    ctx.shadowColor = "rgba(0,0,0,0.5)";
+                    ctx.shadowBlur = 4;
+                    ctx.drawImage(img, WIDTH / 2 - 90, offsetY, 32, 32);
+                    ctx.shadowBlur = 0;
+
+                    // Value
+                    ctx.fillStyle = "#fff";
+                    ctx.font = "24px system-ui, Arial";
+                    ctx.fillText(`${label}: ${value}`, WIDTH / 2, offsetY + 8);
+
+                    offsetY += step;
+                }
+
+                row(croissantImg, croissantCount, "  Croissant");
+                row(friesImg, friesCount, "Fries");
+                row(poopImg, poopCount, "Poop");
+                row(coffeeImg, coffeeCount, " Coffee");
+
+                row(samosaImg, samosaCount, " Samosa");
+                row(jobImg, jobCount, " Job");
+
+                row(ferretImg, ferretCount, " Ferrets");
+                row(sadchairImg, sadchairCount, " Sad Chair");
+
+
+                // ---- Pipe row (custom) ---- 
+                const px = WIDTH / 2 - 70, py = offsetY + 20, pw = 16, ph = 24;
+                // Body 
+                ctx.fillStyle = "#0a0"; // green 
+                ctx.fillRect(px, py, pw, ph);
+                // Side shading 
+                ctx.fillStyle = "#060";
+                ctx.fillRect(px + pw - 6, py, 6, ph);
+                // Cap 
+                ctx.fillStyle = "#080";
+                ctx.fillRect(px - 2, py - 6, pw + 4, 6);
+                // Cap highlight 
+                ctx.fillStyle = "#0c0";
+                ctx.fillRect(px + 4, py - 4, pw - 8, 2);
+
+                // Pipe score
+                ctx.fillStyle = "#fff";
+                ctx.fillText(`Pipes: ${pipeCount}`, WIDTH / 2, offsetY + 20);
+                offsetY += step;
+
+                // Restart button
+                ctx.fillStyle = "rgba(255,255,255,0.2)";
+                ctx.fillRect(WIDTH / 2 - 120, offsetY + 25, 240, 50);
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 28px system-ui, Arial";
+                ctx.fillText("Press R to Restart", WIDTH / 2, offsetY + 34);
+
+                streak = 0;
+
+
+
+
+                if (!overlayShown) {
+                    showSubmitOverlay(score);
+                    overlayShown = true;
+                }
+            }
+
+
+
+            // ============================
+            // INPUT
+            // ============================
+            function flap() {
                 if (!gameOver) {
-                    gameOver = true;
-                    if (musicOn) {
-                        gameOverSound.currentTime = 0;
-                        gameOverSound.play();
-                    }
+                    started = true;
+                    faceVel = JUMP;
+                    overlayShown = false;
+                    alreadySubmitted = false;
+
                 }
             }
 
 
-            // Difficulty scaling
-            const difficultyProgress = croissantCount + friesCount;
-            pipeGap = Math.max(PIPE_GAP_MIN, PIPE_GAP_START - difficultyProgress * 3.5);
-            pipeSpeed = Math.min(PIPE_SPEED_MAX, PIPE_SPEED_START + difficultyProgress * 0.155);
-        }
 
-        function rectsOverlap(a, b) {
-            return a.x < b.x + b.w &&
-                a.x + a.w > b.x &&
-                a.y < b.y + b.h &&
-                a.y + a.h > b.y;
-        }
+            window.addEventListener("keydown", (e) => {
 
-        function draw() {
-            drawGradientBackground();
-            drawPipes();
-            drawItems();
-            ctx.drawImage(faceImg, Math.floor(faceX), Math.floor(faceY), FACE_W, FACE_H);
-            // ground (visual only; set height >0 to show a strip)
-            // ctx.fillStyle = GROUND_COLOR;
-            // ctx.fillRect(0, HEIGHT - 50, WIDTH, 50);
-
-            drawHUD();
-            if (gameOver) drawGameOver();
-        }
-
-        function loop(ts) {
-            const dt = (ts - lastFrameTime) / 1000;
-            lastFrameTime = ts;
-            if (running) update(dt);
-            draw();
-            requestAnimationFrame(loop);
-        }
-
-        // ============================
-        // BOOT
-        // ============================
-        (async function main() {
-            await loadAssets();
-            reset();
-            requestAnimationFrame(loop);
-        })();
+                if (e.code === "Space") {
+                    e.preventDefault();
+                }
 
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const countrySelect = document.getElementById("playerCountry");
-            const countries = [
-                "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", "Australia", "Austria",
-                "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
-                "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
-                "Cambodia", "Cameroon", "Canada", "Cape Verde", "Central African Republic", "Chad", "Chile", "China",
-                "Colombia", "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark",
-                "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Estonia", "Eswatini",
-                "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece",
-                "Guatemala", "Guinea", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran",
-                "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kuwait",
-                "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg",
-                "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Mauritania", "Mauritius", "Mexico",
-                "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nepal",
-                "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway",
-                "Oman", "Pakistan", "Panama", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania",
-                "Russia", "Rwanda", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
-                "Slovakia", "Slovenia", "Somalia", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sudan", "Suriname",
-                "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo", "Trinidad and Tobago",
-                "Tunisia", "Turkey", "Turkmenistan", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
-                "United States", "Uruguay", "Uzbekistan", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
-            ];
 
-            countries.forEach(c => {
-                const option = document.createElement("option");
-                option.value = c;
-                option.textContent = c;
-                countrySelect.appendChild(option);
+                if (overlayVisible) {
+                    if (e.code === "Escape") {
+                        e.preventDefault();
+                        closeSubmit();
+                    }
+
+                    return;
+                }
+
+                // Normal gameplay keys
+                if (e.code === "Space") { e.preventDefault(); flap(); }
+                if (e.code === "KeyR" && gameOver) reset();
             });
-        });
+            document.getElementById("btnStart").onclick = flap;
+            document.getElementById("btnJump").onclick = flap;
+            document.getElementById("btnReset").onclick = () => { if (gameOver) reset(); };
+            document.getElementById("btnMute").onclick = () => {
+                toggleMusic();
 
-    </script>
+
+                document.getElementById("btnMute").textContent = musicOn ? "Mute (M)" : "Unmute (M)";
+            };
+            document.getElementById("btnSfx").onclick = () => {
+                sfxOn = !sfxOn;
+                document.getElementById("btnSfx").textContent = sfxOn ? "SFX (S)" : "SFX (S)";
+            };
+
+            canvas.addEventListener("click", (e) => {
+                handleInput(e.clientX, e.clientY);
+            });
+
+            // ============================
+            // GAME LOOP
+            // ============================
+            function update(dt) {
+                if (gameOver || !started) return;
+
+                faceVel += GRAVITY;
+                faceY += faceVel;
+
+                spawnTimer += 1;
+                if (spawnTimer >= SPAWN_FRAMES) {
+                    spawnPipeAndItems();
+                    spawnTimer = 0;
+                }
+                // expire invincibility
+                if (invincible && performance.now() >= invincibleUntil) {
+                    invincible = false;
+                }
+
+                // ---- Move pipes ----
+                for (let i = pipes.length - 1; i >= 0; i--) {
+                    const p = pipes[i];
+                    p.x -= pipeSpeed;
+
+                    // Score when player passes the pipe
+                    if (!p.scored && (faceX > p.x + PIPE_W)) {
+                        score += POINT_PIPE;
+                        pipeCount += 1;
+                        lastScoreChange = POINT_PIPE;
+                        lastChangeTime = performance.now() / 1000;
+                        p.scored = true;
+                    }
+
+                    // Remove off-screen
+                    if (p.x + PIPE_W < 0) pipes.splice(i, 1);
+                }
+
+                // ---- Spawn arrows from crossbows ----
+                for (const p of pipes) {
+                    if (p.hasCrossbow) {
+                        if (p.arrowCooldown === undefined) p.arrowCooldown = 0;
+
+                        p.arrowCooldown -= dt;
+
+                        const interval = (score > 100 ? 3 : 5);
+                        if (p.arrowCooldown <= 0 && p.x + PIPE_W < WIDTH) {
+                            arrows.push({
+                                x: p.x + (PIPE_W / 2) - 8,
+                                y: p.gapY - (pipeGap >> 1),
+                                vy: 30 + pipeSpeed * 5
+                            });
+                            p.arrowCooldown = interval;
+                        }
+                    }
+                }
+
+
+                // ---- Update arrows ----
+                // update arrows
+                for (const a of arrows) {
+                    a.x -= pipeSpeed;
+                    a.y += a.vy * dt;
+                }
+                // ---- Arrow collisions with face ----
+                for (const a of arrows) {
+                    if (faceX < a.x + 16 && faceX + FACE_W > a.x && faceY < a.y + 32 && faceY + FACE_H > a.y) {
+                        if (!invincible) {
+                            life = Math.max(0, life - 2);
+                            triggerBlink();
+                        }
+                        a.hit = true;
+                    }
+                }
+
+                // ---- Remove arrows off-screen or hit ----
+                arrows = arrows.filter(a => a.y < HEIGHT && !a.hit);
+
+                // ---- Move items and collisions ----
+                const faceRect = { x: faceX, y: faceY, w: FACE_W, h: FACE_H };
+                for (let i = items.length - 1; i >= 0; i--) {
+                    const it = items[i];
+                    it.x -= pipeSpeed;
+                    const itRect = { x: it.x, y: it.y, w: 32, h: 32 };
+
+                    if (itRect.x + itRect.w < 0) {
+                        items.splice(i, 1);
+                        continue;
+                    }
+
+                    if (rectsOverlap(faceRect, itRect)) {
+                        let positiveHit = false;
+
+
+                        if (it.type === "copesmoke") {
+                            if (!invincible) {
+                                invincible = true;
+                                invincibleUntil = performance.now() + INVINCIBLE_MS;
+                                if (sfxOn && typeof copesmokeSound !== "undefined") {
+                                    copesmokeSound.currentTime = 0;
+                                    copesmokeSound.play();
+                                }
+                            } else {
+                                // console.log("Ignored copesmoke: already invincible");
+                            }
+                            items.splice(i, 1);
+                            continue;
+                        }
+
+                        // --- Shielded from negatives ---
+                        const isNegative = (it.type === "job" || it.type === "samosa" || it.type === "ferret" || it.type === "sadchair");
+                        if (invincible && isNegative) {
+
+                            items.splice(i, 1);
+                            continue;
+                        }
+
+                        // --- Normal item handling ---
+                        if (it.type === "croissant") {
+                            croissantCount++;
+                            score += POINT_CROISSANT;
+                            lastScoreChange = POINT_CROISSANT;
+                            positiveHit = true;
+                            life = Math.min(MAX_LIFE, life + 2);
+                        } else if (it.type === "fries") {
+                            friesCount++;
+                            score += POINT_FRIES;
+                            lastScoreChange = POINT_FRIES;
+                            positiveHit = true;
+                            life = Math.min(MAX_LIFE, life + 2);
+                        } else if (it.type === "poop") {
+                            poopCount++;
+                            score += POINT_POOP;
+                            lastScoreChange = POINT_POOP;
+                            positiveHit = true;
+                            life = Math.min(MAX_LIFE, life + 2);
+                        } else if (it.type === "coffee") {
+                            coffeeCount++;
+                            score += POINT_COFFEE;
+                            lastScoreChange = POINT_COFFEE;
+                            positiveHit = true;
+                            life = Math.min(MAX_LIFE, life + 4);
+                        }
+                        else if (it.type === "job") {
+                            jobCount++;
+                            score += POINT_JOB;
+                            lastScoreChange = POINT_JOB;
+                            life = Math.max(0, life - 2);
+                            triggerBlink();
+                        } else if (it.type === "samosa") {
+                            samosaCount++;
+                            score += POINT_SAMOSA;
+                            lastScoreChange = POINT_SAMOSA;
+                            life = Math.max(0, life - 3);
+                            triggerBlink();
+                        } else if (it.type === "ferret") {
+                            ferretCount++;
+                            score += POINT_FERRET;
+                            lastScoreChange = POINT_FERRET;
+                            life = Math.max(0, life - 12);
+                            triggerBlink();
+                        }
+                        else if (it.type === "sadchair") {
+                            sadchairCount++;
+                            score += POINT_SADCHAIR;
+                            lastScoreChange = POINT_SADCHAIR;
+                            life = Math.max(0, life - 2);
+                            triggerBlink();
+                        }
+
+                        // --- SFX ---
+                        if (positiveHit && sfxOn) {
+                            coinSound.currentTime = 0;
+                            playSfx(coinSound);
+                        }
+
+                        // --- Multiplier logic ---
+                        if (positiveHit) {
+                            streak++;
+                        } else {
+                            streak = 0;
+                            multiplier = 1;
+                        }
+
+                        if (streak >= 12) {
+                            multiplier = 3;
+                            multiplierText = "3x";
+                            multiplierTimer = performance.now() / 1000;
+                        } else if (streak >= 6) {
+                            multiplier = 2;
+                            multiplierText = "2x";
+                            multiplierTimer = performance.now() / 1000;
+                        } else {
+                            multiplier = 1;
+                        }
+
+                        if (positiveHit && multiplier > 1) {
+                            const bonus = lastScoreChange * (multiplier - 1);
+                            score += bonus;
+                            lastScoreChange += bonus;
+                        }
+
+                        lastChangeTime = performance.now() / 1000;
+                        items.splice(i, 1);
+                    }
+
+                }
+
+                // ---- Life/game over check ----
+                if (life <= 0 && !gameOver) {
+                    gameOver = true;
+                    triggerBlink();
+                    if (sfxOn) {
+                        gameOverSound.currentTime = 0;
+                        playSfx(gameOverSound);
+                    }
+                }
+
+                // ---- Collisions with pipes ----
+                for (const p of pipes) {
+                    const x = p.x, gapY = p.gapY;
+                    const top = gapY - (pipeGap >> 1);
+                    const bot = gapY + (pipeGap >> 1);
+                    const withinX = (faceX + FACE_W > x) && (faceX < x + PIPE_W);
+                    if (withinX) {
+                        if (faceY < top || (faceY + FACE_H) > bot) {
+                            if (!invincible) {
+                                triggerBlink();
+                                if (!gameOver) { gameOver = true; if (sfxOn) { gameOverSound.currentTime = 0; gameOverSound.play(); } }
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                // ---- Out of bounds ----
+                if (faceY > HEIGHT || faceY < -40) {
+                    if (!gameOver) {
+                        triggerBlink();
+                        gameOver = true;
+                        if (sfxOn) {
+                            gameOverSound.currentTime = 0;
+                            playSfx(gameOverSound);
+                        }
+                    }
+                }
+
+
+
+                // Difficulty scaling
+                const difficultyProgress = croissantCount + friesCount;
+                pipeGap = Math.max(PIPE_GAP_MIN, PIPE_GAP_START - difficultyProgress * 3.5);
+                pipeSpeed = Math.min(PIPE_SPEED_MAX, PIPE_SPEED_START + difficultyProgress * 0.155);
+            }
+
+            function rectsOverlap(a, b) {
+                return a.x < b.x + b.w &&
+                    a.x + a.w > b.x &&
+                    a.y < b.y + b.h &&
+                    a.y + a.h > b.y;
+            }
+
+            function draw() {
+                drawGradientBackground();
+                drawPipes();
+                drawItems();
+                drawArrows();
+                drawLifeBar();
+
+                // Face with blink effect
+                if (!blinkActive) {
+                    ctx.drawImage(faceImg, Math.floor(faceX), Math.floor(faceY), FACE_W, FACE_H);
+                } else {
+                    const now = performance.now();
+                    if (now < blinkEndTime) {
+                        const phase = Math.floor((now / blinkInterval)) % 2;
+                        if (phase === 0) {
+                            ctx.drawImage(faceImg, Math.floor(faceX), Math.floor(faceY), FACE_W, FACE_H);
+                        }
+                    } else {
+                        blinkActive = false;
+                        ctx.drawImage(faceImg, Math.floor(faceX), Math.floor(faceY), FACE_W, FACE_H);
+                    }
+                }
+
+                // ground (visual only; set height >0 to show a strip)
+                // ctx.fillStyle = GROUND_COLOR;
+                // ctx.fillRect(0, HEIGHT - 50, WIDTH, 50);
+
+                drawHUD();
+                if (gameOver) drawGameOver();
+            }
+
+
+            function loop(ts) {
+                const dt = (ts - lastFrameTime) / 1000;
+                lastFrameTime = ts;
+                if (running) update(dt);
+                draw();
+                requestAnimationFrame(loop);
+            }
+
+            // ============================
+            // BOOT
+            // ============================
+            (async function main() {
+                await loadAssets();
+                reset();
+                requestAnimationFrame(loop);
+            })();
+
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const countrySelect = document.getElementById("playerCountry");
+                const countries = [
+                    "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", "Australia", "Austria",
+                    "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+                    "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+                    "Cambodia", "Cameroon", "Canada", "Cape Verde", "Central African Republic", "Chad", "Chile", "China",
+                    "Colombia", "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark",
+                    "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Estonia", "Eswatini",
+                    "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece",
+                    "Guatemala", "Guinea", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran",
+                    "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kuwait",
+                    "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg",
+                    "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Mauritania", "Mauritius", "Mexico",
+                    "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nepal",
+                    "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway",
+                    "Oman", "Pakistan", "Panama", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania",
+                    "Russia", "Rwanda", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
+                    "Slovakia", "Slovenia", "Somalia", "South Africa", "South Korea", "Spain", "Sri Lanka", "Sudan", "Suriname",
+                    "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo", "Trinidad and Tobago",
+                    "Tunisia", "Turkey", "Turkmenistan", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
+                    "United States", "Uruguay", "Uzbekistan", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+                ];
+
+                countries.forEach(c => {
+                    const option = document.createElement("option");
+                    option.value = c;
+                    option.textContent = c;
+                    countrySelect.appendChild(option);
+                });
+            });
+
+        </script>
 </body>
 
 </html>
