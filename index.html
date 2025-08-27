@@ -266,6 +266,8 @@
             <img src="assets/sad_chair.png" width="24" height="24" alt="Arrow"> (-3 pts, –2 life),
             <img src="assets/copesmoke.png" width="24" height="24" alt="Copesmoke"> (grants 12s
             invincibility).
+            <img src="assets/coffee.png" width="24" height="24" alt="Coffee"> (+2 pts, +4 life),
+    🟢 <span style="font-weight:bold;">Snot</span> (+5 life).
 
             <br><br>
             <strong>❤️ Health</strong> starts at 100.
@@ -470,6 +472,16 @@
                         afterwards.</p>
                 </div>
             </div>
+            <div class="card">
+    <img src="assets/snot.png" alt="Snot Blob" width="40" height="40">
+    <div>
+        <h3>Snot Blob</h3>
+        <p>A sticky glob of Arwijn’s eternal nasal discharge. It might look gross, but somehow bathing in it revitalizes you. 
+           Picking one up restores <strong>+5 Life</strong>. 
+           Just try not to think too hard about where it came from.</p>
+    </div>
+</div>
+
 
             <br>
             <br>
@@ -751,6 +763,8 @@
             // ============================
             // CONFIG
             // ============================
+            let tempFaceImg = null;
+            let tempFaceUntil = 0;
 
             let gameStartTime = null;
             const WIDTH = 1200, HEIGHT = 720;
@@ -793,6 +807,7 @@
             let multiplierTimer = 0;
             let multiplierText = "";
 
+            let snots = [];
 
             let invincible = false;
             let invincibleUntil = 0;
@@ -801,6 +816,12 @@
             const copesmokeImg = new Image();
             copesmokeImg.src = "assets/copesmoke.png";
 
+            // preload slimed face
+            const greenelf = new Image();
+            greenelf.src = "assets/greenelf.png";
+
+            const greenelfsmoke = new Image();
+            greenelfsmoke.src = "assets/greenelfsmoke.png";
 
             const copesmokeSound = new Audio("assets/copesmoke_powerup.mp3");
             copesmokeSound.volume = 0.05;
@@ -1009,6 +1030,9 @@
             const gameOverSound = new Audio("assets/dead.mp3");
             gameOverSound.volume = 0.065;
 
+            const snotsplash = new Audio("assets/snotsplash.mp3");
+            snotsplash.volume = 0.65;
+
 
 
 
@@ -1108,7 +1132,7 @@
             // ============================
             // STATE
             // ============================
-            let faceImg, croissantImg, friesImg, jobImg, samosaImg, poopImg, pipeImg, ferretImg, sadchairImg, coffeeImg;
+            let facecryImg, faceImg, croissantImg, friesImg, jobImg, samosaImg, poopImg, pipeImg, ferretImg, sadchairImg, coffeeImg;
 
             let faceX = 100, faceY = HEIGHT / 2, faceVel = 0;
             const FACE_W = 60, FACE_H = 60;
@@ -1182,7 +1206,8 @@
                     pipeImg,
                     ferretImg,
                     sadchairImg,
-                    coffeeImg
+                    coffeeImg,
+                    facecryImg
                 ] = await Promise.all([
                     loadImage("assets/face_2.png"),
                     loadImage("assets/croissant.png"),
@@ -1194,6 +1219,7 @@
                     loadImage("assets/ferret.png"),
                     loadImage("assets/sad_chair.png"),
                     loadImage("assets/coffee.png"),
+                    loadImage("assets/face_cry.png"),
 
                 ]);
             }
@@ -1218,6 +1244,8 @@
                 pipes.length = 0;
                 items.length = 0;
                 arrows.length = 0;
+                snots.length = 0;
+
 
                 faceX = 100;
                 faceY = HEIGHT / 2;
@@ -1245,6 +1273,8 @@
                 invincibleUntil = 0;
 
                 life = MAX_LIFE;
+                tempFaceImg = null;
+                tempFaceUntil = 0;
 
 
 
@@ -1309,7 +1339,24 @@
             function spawnPipeAndItems() {
                 const gapY = randInt(80 + (pipeGap >> 1), HEIGHT - 80 - (pipeGap >> 1));
                 const pipeX = WIDTH;
-                pipes.push({ x: pipeX, gapY, scored: false, hasCrossbow: Math.random() < 0.70 });
+
+                const pipe = {
+                    x: pipeX,
+                    gapY,
+                    scored: false,
+                    hasCrossbow: false,
+                    hasSnot: false
+                };
+
+                // Decide type of this pipe
+                if (Math.random() < 0.65) {  // 25% chance crossbow
+                    pipe.hasCrossbow = true;
+                } else if (Math.random() < 0.5) {  // 50% chance snot (only if not crossbow)
+                    pipe.hasSnot = true;
+                }
+
+                pipes.push(pipe);
+
 
                 const safeTop = 40;
                 const safeBottom = HEIGHT - 40;
@@ -1481,6 +1528,30 @@
                     ctx.drawImage(arrowImg, Math.floor(a.x), Math.floor(a.y), 16, 32);
                 }
             }
+
+
+            function drawSnots() {
+                ctx.fillStyle = "rgba(0,200,0,0.8)";
+                ctx.strokeStyle = "rgba(0,150,0,0.9)";
+                ctx.lineWidth = 2;
+
+                for (const s of snots) {
+                    ctx.beginPath();
+
+
+                    const wobble = Math.sin(performance.now() / 200 + s.y / 30) * 3;
+                    const r = s.r + wobble;
+
+                    ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
+
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+
+
+
 
             function drawLifeBar() {
                 const barWidth = 120, barHeight = 15;
@@ -1707,7 +1778,7 @@
                 if (!gameOver) {
                     if (!started) {
                         started = true;
-                        gameStartTime = performance.now(); 
+                        gameStartTime = performance.now();
                     }
                     faceVel = JUMP;
                     overlayShown = false;
@@ -1761,7 +1832,7 @@
             // ============================
             function update(dt) {
 
-                if (!gameStartTime) return; 
+                if (!gameStartTime) return;
                 const elapsedSec = (performance.now() - gameStartTime) / 1000;
 
                 if (gameOver || !started) return;
@@ -1860,6 +1931,91 @@
                     }
                 }
 
+                // ---- Spawn snots from pipes without crossbows ----
+                for (const p of pipes) {
+                    if (p.hasSnot) {
+                        if (p.snotCooldown === undefined) p.snotCooldown = 0;
+                        p.snotCooldown -= dt;
+
+                        const baseInterval = 3.0;
+                        const minInterval = 1.5;
+                        const interval = Math.max(minInterval, baseInterval - (difficultyProgress * 0.01));
+
+                        if (p.snotCooldown <= 0 && p.x + PIPE_W < WIDTH) {
+                            const topY = p.gapY - (pipeGap >> 1);
+
+                            snots.push({
+                                x: p.x + (PIPE_W / 2),
+                                y: topY,
+                                vy: 120 + Math.random() * 40,
+                                r: 12 + Math.random() * 8
+                            });
+
+                            p.snotCooldown = interval;
+                        }
+                    }
+                }
+
+
+
+                // ---- Move snot blobs ----
+                for (let i = snots.length - 1; i >= 0; i--) {
+
+                    const s = snots[i];
+                    s.x -= pipeSpeed * dt;
+                    s.y += s.vy * dt;
+                    if (s.y > HEIGHT + 50) {
+                        snots.splice(i, 1);
+                    }
+
+                }
+
+                // ---- Snot collisions with face ----
+                for (const s of snots) {
+                    if (
+                        faceX < s.x + s.r &&
+                        faceX + FACE_W > s.x - s.r &&
+                        faceY < s.y + s.r &&
+                        faceY + FACE_H > s.y - s.r
+                    ) {
+                        life = Math.min(MAX_LIFE, life + 5);
+
+                        if (!invincible) {
+            // Flash green for 250ms
+            tempFaceImg = greenelf;
+            tempFaceUntil = performance.now() + 250;
+        } else {
+            // Flash green-smoke for 250ms
+            tempFaceImg = greenelfsmoke;
+            tempFaceUntil = performance.now() + 250;
+
+            // Then stick to copesmokingelf for rest of invincible period
+            setTimeout(() => {
+                // Only if still invincible when 250ms passes
+                if (invincible && performance.now() < invincibleUntil) {
+                    const copesmokingelf = new Image();
+                    copesmokingelf.src = "assets/copesmokingelf.png";
+                    tempFaceImg = copesmokingelf;
+                    tempFaceUntil = invincibleUntil;
+                }
+            }, 250);
+        }
+
+                        if (sfxOn) {
+                            snotsplash.currentTime = 0;
+                            playSfx(snotsplash);
+                        }
+
+                        s.hit = true;
+                    }
+                }
+
+
+                // Remove collected snots
+                snots = snots.filter(s => !s.hit && s.y < HEIGHT + 50);
+
+
+
                 // ---- Remove arrows off-screen or hit ----
                 arrows = arrows.filter(a => a.y < HEIGHT && !a.hit);
 
@@ -1887,6 +2043,10 @@
                                     copesmokeSound.currentTime = 0;
                                     copesmokeSound.play();
                                 }
+                                const copesmokingelf = new Image();
+                                copesmokingelf.src = "assets/copesmokingelf.png";
+                                tempFaceImg = copesmokingelf;
+                                tempFaceUntil = invincibleUntil;
                             } else {
                                 // console.log("Ignored copesmoke: already invincible");
                             }
@@ -1946,6 +2106,11 @@
                             lastScoreChange = POINT_FERRET;
                             life = Math.max(0, life - 12);
                             triggerBlink();
+
+                            const faceCry = new Image();
+                            faceCry.src = "assets/face_cry.png";
+                            tempFaceImg = faceCry;
+                            tempFaceUntil = performance.now() + 500;
                         }
                         else if (it.type === "sadchair") {
                             sadchairCount++;
@@ -2034,8 +2199,6 @@
 
 
 
-                // difficulty grows with time (start slow, then ramp faster)
-
                 pipeGap = Math.max(PIPE_GAP_MIN, PIPE_GAP_START - difficultyProgress * 0.5);
                 pipeSpeed = Math.min(PIPE_SPEED_MAX, PIPE_SPEED_START + difficultyProgress * 6.5);
 
@@ -2053,23 +2216,37 @@
                 drawPipes();
                 drawItems();
                 drawArrows();
+                drawSnots();
                 drawLifeBar();
 
-                // Face with blink effect
-                if (!blinkActive) {
-                    ctx.drawImage(faceImg, Math.floor(faceX), Math.floor(faceY), FACE_W, FACE_H);
+                const now = performance.now();
+                let currentFace = faceImg;
+
+
+                if (tempFaceImg && now < tempFaceUntil) {
+                    currentFace = tempFaceImg;
                 } else {
-                    const now = performance.now();
+                    tempFaceImg = null;
+                }
+
+
+
+                // Blink logic still applies
+                if (!blinkActive) {
+                    ctx.drawImage(currentFace, Math.floor(faceX), Math.floor(faceY), FACE_W, FACE_H);
+                } else {
                     if (now < blinkEndTime) {
-                        const phase = Math.floor((now / blinkInterval)) % 2;
+                        const phase = Math.floor(now / blinkInterval) % 2;
                         if (phase === 0) {
-                            ctx.drawImage(faceImg, Math.floor(faceX), Math.floor(faceY), FACE_W, FACE_H);
+                            ctx.drawImage(currentFace, Math.floor(faceX), Math.floor(faceY), FACE_W, FACE_H);
                         }
                     } else {
                         blinkActive = false;
-                        ctx.drawImage(faceImg, Math.floor(faceX), Math.floor(faceY), FACE_W, FACE_H);
+                        ctx.drawImage(currentFace, Math.floor(faceX), Math.floor(faceY), FACE_W, FACE_H);
                     }
                 }
+
+
 
                 // ground (visual only; set height >0 to show a strip)
                 // ctx.fillStyle = GROUND_COLOR;
