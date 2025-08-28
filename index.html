@@ -371,7 +371,8 @@
                         <strong>+2</strong>
                         life and gives <strong>+2</strong> points. Collect croissants to boost your health while scoring
                         more. Safe and
-                        always helpful on your journey.</p>
+                        always helpful on your journey.
+                    </p>
                 </div>
             </div>
 
@@ -383,7 +384,8 @@
                         exposes how good of a "medical expert" he is. Gives you <strong>+3</strong> points and
                         <strong>+2</strong> life. They’re
                         delicious, but don’t get too distracted! Great for stacking up points while staying alive
-                        longer.</p>
+                        longer.
+                    </p>
                 </div>
             </div>
 
@@ -395,7 +397,8 @@
                         <strong>–2</strong>
                         points and <strong>–3</strong> life. A deceptive snack for Arwijn that rightfully punishes him.
                         Avoid it if you
-                        want to survive longer.</p>
+                        want to survive longer.
+                    </p>
                 </div>
             </div>
 
@@ -418,7 +421,8 @@
                     <p>A tricky item. Talking about "jobs" and "work" drains Arwijn. <strong>–4</strong> points and
                         <strong>–2</strong> life. Represents
                         boring work
-                        dragging you down. Avoid unless you want your score to suffer.</p>
+                        dragging you down. Avoid unless you want your score to suffer.
+                    </p>
                 </div>
             </div>
 
@@ -785,7 +789,7 @@
             const SPAWN_INTERVAL = 1.5; // seconds
 
 
-            const GRAVITY = 1100;
+            const GRAVITY = 800;
             const JUMP = -300.75;
             const PIPE_GAP_START = 150;
             const PIPE_GAP_MIN = 350;
@@ -825,15 +829,26 @@
             let invincibleUntil = 0;
             const INVINCIBLE_MS = 12_000;
 
+
+            let autopilot = false;
+            let autopilotUntil = 0;
+
             const copesmokeImg = new Image();
             copesmokeImg.src = "assets/copesmoke.png";
 
-            // preload slimed face
+            const paypalImg = new Image();
+            paypalImg.src = "assets/paypal.png";
+
+
             const greenelf = new Image();
             greenelf.src = "assets/greenelf.png";
 
             const greenelfsmoke = new Image();
             greenelfsmoke.src = "assets/greenelfsmoke.png";
+
+
+            const dollarelfgreen = new Image();
+            dollarelfgreen.src = "assets/dollarelfgreen.png";
 
             const copesmokeSound = new Audio("assets/copesmoke_powerup.mp3");
             copesmokeSound.volume = 0.05;
@@ -1046,6 +1061,9 @@
             snotsplash.volume = 0.65;
 
 
+            const paypalSound = new Audio("assets/smb_1_up.wav");
+            paypalSound.volume = 0.35;
+
 
 
             const sfxX = 200, sfxY = HEIGHT - 50, sfxSize = 32;
@@ -1135,6 +1153,59 @@
                     ctx.fillText(`✨ COPESMOKE INVINCIBILITY! ✨ (${sLeft}s)`, WIDTH / 2, 666);
                     ctx.restore();
                 }
+
+
+
+                if (autopilot) {
+                    const msLeft = Math.max(0, autopilotUntil - performance.now());
+                    const sLeft = Math.ceil(msLeft / 1000);
+
+                    // greenish screen tint
+                    ctx.fillStyle = "rgba(0, 200, 0, 0.08)";
+                    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+                    // glowing circle around face
+                    ctx.save();
+                    ctx.strokeStyle = "rgba(0, 255, 0, 0.9)";
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.arc(faceX + FACE_W / 2, faceY + FACE_H / 2,
+                        Math.max(FACE_W, FACE_H) / 2 + 6,
+                        0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.restore();
+                    // countdown text + PayPal image on both sides
+                    ctx.save();
+                    ctx.font = "bold 32px Arial";
+                    ctx.fillStyle = "#00ff00";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "top";
+
+                    ctx.shadowColor = "black";
+                    ctx.shadowBlur = 8;
+
+                    const msg = `AUTOPILOT ACTIVE (${sLeft}s)`;
+                    ctx.fillText(msg, WIDTH / 2, 625);
+
+                    // Draw PayPal logos if loaded
+                    if (paypalImg && paypalImg.complete) {
+                        const imgSize = 40; // adjust as needed
+                        const textWidth = ctx.measureText(msg).width;
+                        const textY = 620;
+
+                        // left logo
+                        const leftX = WIDTH / 2 - textWidth / 2 - imgSize - 10;
+                        ctx.drawImage(paypalImg, leftX, textY, imgSize, imgSize);
+
+                        // right logo
+                        const rightX = WIDTH / 2 + textWidth / 2 + 10;
+                        ctx.drawImage(paypalImg, rightX, textY, imgSize, imgSize);
+                    }
+
+                    ctx.restore();
+
+                }
+
 
             }
 
@@ -1288,6 +1359,8 @@
                 tempFaceImg = null;
                 tempFaceUntil = 0;
 
+                autopilot = false;
+
 
 
                 multiplier = 1;
@@ -1397,6 +1470,9 @@
 
                 const copesmokeProb = 0.15; // 0.7%
                 if (Math.random() < copesmokeProb) placeItem("copesmoke");
+
+                const paypalProb = 0.15; // 0.7%
+                if (Math.random() < paypalProb) placeItem("paypal");
 
             }
 
@@ -1523,6 +1599,7 @@
                     else if (it.type === "copesmoke") img = copesmokeImg;
                     else if (it.type === "sadchair") img = sadchairImg;
                     else if (it.type === "coffee") img = coffeeImg;
+                    else if (it.type === "paypal") img = paypalImg;
 
                     // wobble ferret + sadchair
                     if (it.type === "ferret" || it.type === "sadchair") {
@@ -1849,8 +1926,32 @@
 
                 if (gameOver || !started) return;
 
-                faceVel += GRAVITY * dt;
-                faceY += faceVel * dt;
+
+
+                if (autopilot) {
+                    // player follows next pipe gap
+                    if (pipes.length > 0) {
+                        const nextPipe = pipes[0];
+                        faceY = nextPipe.gapY;
+                    } else {
+                        faceY = HEIGHT / 2;
+                    }
+
+                    if (performance.now() > autopilotUntil) {
+                        autopilot = false;
+                        pipeSpeed = pipeSpeedBackup;
+                    }
+
+
+                } else {
+                    // Normal player physics
+                    faceVel += GRAVITY * dt;
+                    faceY += faceVel * dt;
+                }
+
+
+                // faceVel += GRAVITY * dt;
+                // faceY += faceVel * dt;
 
                 spawnTimer += dt;
                 if (spawnTimer >= SPAWN_INTERVAL) {
@@ -1935,7 +2036,7 @@
                 // ---- Arrow collisions with face ----
                 for (const a of arrows) {
                     if (faceX < a.x + 16 && faceX + FACE_W > a.x && faceY < a.y + 32 && faceY + FACE_H > a.y) {
-                        if (!invincible) {
+                        if (!(invincible || autopilot)) {
                             life = Math.max(0, life - 3);
                             triggerBlink();
                         }
@@ -1983,6 +2084,7 @@
                 }
 
                 // ---- Snot collisions with face ----
+                // ---- Snot collisions with face ----
                 for (const s of snots) {
                     if (
                         faceX < s.x + s.r &&
@@ -1992,18 +2094,30 @@
                     ) {
                         life = Math.min(MAX_LIFE, life + 5);
 
-                        if (!invincible) {
-                            // Flash green for 250ms
-                            tempFaceImg = greenelf;
+                        if (autopilot) {
+                            // Flash dollarelfgreen for 250ms
+                            const dollarelfgreen = new Image();
+                            dollarelfgreen.src = "assets/dollarelfgreen.png";
+                            tempFaceImg = dollarelfgreen;
                             tempFaceUntil = performance.now() + 250;
-                        } else {
+
+                            // Then stick back to elfwiz until autopilot ends
+                            setTimeout(() => {
+                                if (autopilot && performance.now() < autopilotUntil) {
+                                    const elfwiz = new Image();
+                                    elfwiz.src = "assets/dollarelf.png";
+                                    tempFaceImg = elfwiz;
+                                    tempFaceUntil = autopilotUntil;
+                                }
+                            }, 250);
+
+                        } else if (invincible) {
                             // Flash green-smoke for 250ms
                             tempFaceImg = greenelfsmoke;
                             tempFaceUntil = performance.now() + 250;
 
-                            // Then stick to copesmokingelf for rest of invincible period
+                            // Then stick to copesmokingelf until invincible ends
                             setTimeout(() => {
-                                // Only if still invincible when 250ms passes
                                 if (invincible && performance.now() < invincibleUntil) {
                                     const copesmokingelf = new Image();
                                     copesmokingelf.src = "assets/copesmokingelf.png";
@@ -2011,6 +2125,11 @@
                                     tempFaceUntil = invincibleUntil;
                                 }
                             }, 250);
+
+                        } else {
+                            // Normal green flash
+                            tempFaceImg = greenelf;
+                            tempFaceUntil = performance.now() + 250;
                         }
 
                         if (sfxOn) {
@@ -2021,6 +2140,7 @@
                         s.hit = true;
                     }
                 }
+
 
 
                 // Remove collected snots
@@ -2066,9 +2186,35 @@
                             continue;
                         }
 
+                        if (it.type === "paypal") {
+                            if (!autopilot) {
+                                autopilot = true;
+                                autopilotUntil = performance.now() + 15000; // 15 seconds
+
+                                // set boosted speed
+                                pipeSpeedBackup = pipeSpeed;
+                                pipeSpeed = 1900; // super fast rush mode
+
+                                if (sfxOn && typeof paypalSound !== "undefined") {
+                                    paypalSound.currentTime = 0;
+                                    paypalSound.play();
+                                }
+
+                                const dollarelf = new Image();
+                                dollarelf.src = "assets/dollarelf.png";
+                                tempFaceImg = dollarelf;
+                                tempFaceUntil = autopilotUntil;
+                            }
+
+                            items.splice(i, 1);
+                            continue;
+                        }
+
+
+
                         // --- Shielded from negatives ---
                         const isNegative = (it.type === "job" || it.type === "samosa" || it.type === "ferret" || it.type === "sadchair");
-                        if (invincible && isNegative) {
+                        if ((invincible || autopilot) && isNegative) {
 
                             items.splice(i, 1);
                             continue;
